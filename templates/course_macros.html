@@ -1,0 +1,26 @@
+{% macro course_macros(field,username) %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <th>课程号</th>
+                <th>课程名</th>
+                <th>授课老师</th>
+                <th>学习进度</th>
+                <th>学习</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for item in field%}
+                 <tr>
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ item[3] }}</td>
+                    <td><a href="{{ url_for('choose_course',cid =item.cid) }}">选课</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}

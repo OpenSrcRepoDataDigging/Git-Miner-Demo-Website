@@ -1,0 +1,29 @@
+{% macro table_macros(field,username) %}
+    <div class="table-responsive">
+        <b>{{ username }}</b>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                <th>课程号</th>
+                <th>课程名</th>
+                <th>授课教师</th>
+                <th>上限选课人数</th>
+                <th>实际选课人数</th>
+                <th>是否选课</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in field%}
+            <tr>
+                <td>{{ item.cid }}</td>
+                <td>{{ item.cname }}</td>
+                <td>{{ item.teacher }}</td>
+                <td>{{ item.max_count }}</td>
+                <td>{{ item.count }}</td>
+                <td><a href="{{ url_for('choose_course',cid =item.cid) }}">选课</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}

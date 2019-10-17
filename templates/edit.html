@@ -1,0 +1,23 @@
+{% extends 'study.html' %}
+{% from 'macros_form.html' import form_field%}
+
+{% block homepage %}
+    <a class="blog-header-logo text-dark" href="{{ url_for('study') }}">{{ username }}'s Blog</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <br>
+        <a href="{{ url_for('home') }}">&larr; Return</a>
+        <h1 class="display-4">编辑内容</h1>
+        <hr>
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('action_edit') }}" >
+            {{ form.csrf_token }}
+{#            {{  form_field(form.username) }}#}
+            {{  form_field(form.title) }}
+            {{  form_field(form.content) }}
+            {{  form_field(form.photo) }}
+            {{  form.publish(class='btn btn-primary') }}
+        </form>
+    </div>
+{% endblock %}

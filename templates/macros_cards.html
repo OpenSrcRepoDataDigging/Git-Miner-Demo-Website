@@ -1,0 +1,16 @@
+{% macro cards(index,title,time,abstract,link,img_url) %}
+    <div class="card flex-md-row mb-4 box-shadow h-md-250">
+        <div class="card-body d-flex flex-column align-items-start">
+            <strong class="d-inline-block mb-2 text-primary">No.{{ index }}</strong>
+            <h3 class="mb-0">
+                <a class="text-dark" style="font-size: smaller" href="{{ url_for('get_blog_content',blog_title=title)}}">{{ title }}</a>
+            </h3>
+            <div class="mb-1 text-muted">
+                {{ time }}
+            </div>
+            <p class="card-text mb-auto">{{ abstract | truncate(60)}}...</p><!--字符串截断，防止超出-->
+            <a href="{{ url_for('get_blog_content',blog_title=title)}}" style="text-align: right">阅读原文</a>
+        </div>
+        <img class="card-img-right flex-auto d-none d-md-block " src="{{ url_for('get_image',filename=img_url) }}" alt="Card image cap">
+    </div>
+{% endmacro %}

@@ -1,0 +1,27 @@
+{% extends 'study.html' %}
+{% from 'macros_form.html' import form_field%}
+
+{% block title %}
+    {{ super() }}
+    博文内容
+{% endblock %}
+{#{% block headimg %}#}
+{#    <p class="mb-0" style="text-align: center">#}
+{#        <img class="img-fluid" width="80%"  src="{{ url_for('static', filename='2.jpg') }}" />#}
+{#    </p>#}
+{#{% endblock %}#}
+
+{% block blog_content %}
+      <div class="blog-post">
+          <h3 class="blog-post-title">{{ content.title }}</h3>
+          <hr/>
+          <br/>
+          <div class="mb-1 text-muted">{{ content.date }}</div>
+          <br/>
+          <img class="img-fluid" src="{{ url_for('get_image',filename=content.image) }}" alt={{ image }}>
+          <br/>
+          <br/>
+          <p class="blog-post-meta">{{ content.content }}</p>
+      </div><!-- /.blog-post -->
+{% endblock %}
+

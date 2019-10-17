@@ -1,0 +1,74 @@
+{% extends 'study_basic.html' %}
+{% from 'macros_form.html' import form_field%}
+
+{% block postcard %}
+{% endblock %}
+
+{% block user_info %}
+    <span>欢迎您，{{ username }}</span>
+    <div style="width: 20px;height: 20px"></div>
+    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('logout') }}">注销</a>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-9 blog-main">
+            {% block blog_content %}
+                <h3 class="pb-3 mb-4 font-italic border-bottom">
+                    我的课程列表
+                </h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>学号</th>
+                            <th>课程号</th>
+                            <th>学习进度</th>
+                            <th>学习</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for items in contents %}
+                           <tr>
+                                <td>{{ items.sid }}</td>
+                                <td>{{ items.cid }}</td>
+                                <td>{{ items.progress }}</td>
+                                <td><a href="{{ url_for('study_course',cid =items.cid) }}">学习</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endblock %}
+        </div><!-- /.blog-main -->
+
+        <aside class="col-md-3 blog-sidebar">
+            <div class="p-3 mb-3 bg-light rounded">
+                {% block headimg %}
+                    <p class="mb-0" style="text-align: center">
+                        <img class="img-fluid" width="80%"  src="{{ url_for('get_file',filename='admin.jpg') }}" />
+                    </p>
+                {% endblock %}
+                <br/>
+                <h4 class="font-italic" style="text-align: center">{{ username }}</h4>
+            </div>
+
+            <div class="p-3">
+            <h4 class="font-italic">历史博客导航</h4>
+                <ol class="list-unstyled mb-0">
+                    {% for items in contents %}
+                        <li><a href="{{ url_for('get_blog_content',blog_title=items.title) }}">{{ items.title }}</a></li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+            <div class="p-3">
+            <h4 class="font-italic">相关链接</h4>
+                <ol class="list-unstyled">
+                    <li><a href="https://nba.hupu.com/">虎扑NBA</a></li>
+                    <li><a href="https://sports.qq.com/nba/">腾讯NBA</a></li>
+                    <li><a href="http://bbs.nju.edu.cn">南京大学小百合</a></li>
+                </ol>
+            </div>
+        </aside><!-- /.blog-sidebar -->
+    </div><!-- /.row -->
+{% endblock %}

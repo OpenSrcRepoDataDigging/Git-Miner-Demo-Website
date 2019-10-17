@@ -1,0 +1,33 @@
+{% extends 'study_basic.html' %}
+{% from 'macros_form.html' import form_field%}
+
+{% block title %}
+    {{ super() }}
+    登陆
+{% endblock %}
+
+{% block postcard %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <br>
+        <a href="{{ url_for('home') }}">&larr; Return</a>
+        <h1 class="display-4">登陆</h1>
+        <hr>
+        <form method="post" action="{{ url_for('action_login') }}" >
+            {{ form.csrf_token }}
+
+            {{  form_field(form.username) }}
+            {{  form_field(form.password) }}
+
+            <div class="form-check">
+                {{ form.remember(class='form-check-input') }}
+                {{ form.remember.label }}
+                <a href="{{ url_for('register') }}">还没有账号？点击注册</a>
+            </div>
+            {{ form.login(class='btn btn-primary') }}
+        </form>
+    </div>
+{% endblock %}
+
