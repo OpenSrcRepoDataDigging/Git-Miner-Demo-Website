@@ -12,15 +12,16 @@
 {% endblock %}
 
 {% block content %}
-    <nav class="navbar navbar-light bg-light">
-        <form method="post" class="form-inline">
+    <div class="container">
+        <br>
+        <a href="{{ url_for('home') }}">&larr; Return</a>
+        <h1 class="display-4">Git Clone</h1>
+        <hr>
+        <form method="post" action="{{ url_for('action_clone') }}" >
             {{ form.csrf_token }}
-            {{ form.cname(class="form-control mr-sm-2", type="key") }}
-            {{ form.key(class="form-control mr-sm-2", type="key") }}
-            {{ form.author(class="form-control mr-sm-2", type="key") }}
-            {{ form.search(class='btn btn-outline-success my-2 my-sm-0', type='submit') }}
+            {{ form.url(class="form-control mr-sm-2", type="key") }}
+            <br/>
+            {{ form.clone(class='btn btn-primary') }}
         </form>
-    </nav>
-    <br>
-    {{ table_macros(searches,username) }}
+    </div>
 {% endblock %}

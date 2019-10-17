@@ -3,6 +3,10 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from wtforms.validators import DataRequired, Length, ValidationError, Email
 from flask_wtf.file import  FileField,FileRequired,FileAllowed
 
+class GitCloneForm(FlaskForm):
+    url = StringField('Git仓库URL', render_kw={'placeholder': '请输入Git仓库URL，格式类似 git@github.com:user/repo.git'})
+    clone = SubmitField('Git Clone')
+
 #登陆，注册表单
 class BaseLR_Form(FlaskForm):
     username = StringField('用户名', render_kw={'placeholder': '账户'}, validators=[DataRequired(message=u'请输入用户名')])

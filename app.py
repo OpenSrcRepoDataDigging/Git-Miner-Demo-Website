@@ -2,7 +2,7 @@ from flask import Flask, g, current_app, render_template
 import os
 import sqlite3
 from flask import Flask, render_template, flash, redirect, url_for, request, send_from_directory, session
-from BlogForms import LoginForm, RegisterForm, UploadForm, BlogForm, DeleteForm,Search_Form
+from BlogForms import LoginForm, RegisterForm, UploadForm, BlogForm, DeleteForm, Search_Form, GitCloneForm
 import uuid
 import time
 from DB_options import  DB_options,SQLite_Options
@@ -28,14 +28,14 @@ def teardown(error):
 @app.route('/')
 def home():
     if not session.get('logged_in'):
-        return render_template('input_url.html')
+        return render_template('study_basic.html')
     else:
         return redirect(url_for('mooc'))
 
 # Github
 @app.route('/input_url')
 def input_url():
-    return render_template('study_basic.html')
+    return render_template('input_url.html')
 
 # 博客
 @app.route('/study')
@@ -51,41 +51,7 @@ def study():
             username = username,
             contents = contents
         )
-    
-# 图书馆
-def get_real_list(librarys, cname='', key='', teacher=''):
 
-    res = librarys
-    '''
-        这里有个注意点，就是返回值是Row 对象，而不是字典。 Row 对象是 namedtuple
-    '''
-    if cname != '' or key != '' or teacher != '':
-        print('key:', key,' author:', teacher)
-        outList = []
-        for rows in librarys:
-            flag = False
-            if cname != '':  # 有课程名，优先课程名
-                if rows['cname'] == cname:
-                    flag = True
-            else:
-                if key != '' and  teacher != '':
-                    if rows['cname'].__contains__(key) and rows['teacher'].__contains__(teacher):
-                        flag = True
-                elif key != '' and rows['cname'].__contains__(key):
-                    print("key != None",key != None,"筛选key：",rows['cname'])
-                    flag = True
-                elif teacher != '' and rows['teacher'].__contains__(teacher):
-                    print("teacher != None", teacher != None, "筛选teacher：", rows['cname'])
-                    flag = True
-                else:
-                    flag = False
-
-            if flag:
-                print("筛选课程：",rows['cname'])
-                outList.append(rows)
-        res = outList
-
-    return res
 
 @app.route('/mooc',methods=['GET','POST'])
 def mooc():
@@ -93,26 +59,34 @@ def mooc():
         return render_template('study_basic.html')
     else:
         username = session.get('username')
-        sql = SQLite_Options()  # 管理前期数据库操作的类
-        librarys = sql.select('COURSE')
-        form = Search_Form()
-
-        skey = ''
-        sauthor = ''
-        scname = ''
-        if form.validate_on_submit():
-            scname = form.cname.data
-            skey = form.key.data
-            sauthor = form.author.data
-
-        searches =get_real_list(librarys, cname = scname, key=skey, teacher=sauthor)
+        form = GitCloneForm()
 
         return render_template(
             'mooc.html',
-            librarys = librarys,
-            searches = searches,
+            username = username,
             form = form,
+        )
+
+@app.route('/action_clone', methods=['POST'])
+def action_clone():
+    if not session.get('logged_in'):
+        return render_template('study_basic.html')
+    else:
+        username = session.get('username')
+        form = GitCloneForm()
+
+        url = ''
+        if form.validate_on_submit():
+            url = form.url.data
+            '''
+                此处虚假调用Java代码，然后一系列处理吧
+            '''
+            return redirect(url_for('study'))
+
+        return render_template(
+            'mooc.html',
             username=username,
+            form=form,
         )
 
 @app.route('/study-content/<blog_title>')
