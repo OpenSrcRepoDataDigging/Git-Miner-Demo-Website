@@ -234,11 +234,14 @@ def choose_course(cid):
 
 @app.route('/study/study_course/<path:cid>')
 def study_course(cid):
-    flash('学习'+cid)
     username = session.get('username')
     sql = SQLite_Options()
     sql.studyCourse(sid=username,cid=cid)
-    return redirect(url_for('study'))
+    # return redirect(url_for('study'))
+    return render_template(
+        "study_content.html",
+        username = username
+    )
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
