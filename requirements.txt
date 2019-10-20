@@ -86,7 +86,7 @@ marshmallow-sqlalchemy==0.19.0
 matplotlib==3.0.3
 networkx==2.2
 newspaper3k==0.2.8
-nltk==3.4
+nltk==3.4.5
 numpy==1.16.2
 ordereddict==1.1
 pandas==0.24.2
