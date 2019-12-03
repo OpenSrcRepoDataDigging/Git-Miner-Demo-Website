@@ -54,10 +54,10 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 {% block nav %}
-                    <a class="nav-item nav-link active" href="{{ url_for('home') }}">Home<span class="sr-only">(current)</span></a>
-                    <a class="nav-item nav-link" href="{{ url_for('sql_display') }}">User Data</a>
-                    <a class="nav-item nav-link" href="{{ url_for('quick_login') }}">Quick Login</a>
-                    <a class="nav-item nav-link" href="{{ url_for('study') }}">My Repository</a>
+                    <a class="nav-item nav-link active" href="{{ url_for('home') }}">首页<span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link" href="{{ url_for('sql_display') }}">数据库信息</a>
+                    <a class="nav-item nav-link" href="{{ url_for('quick_login') }}">快速登录</a>
+                    <a class="nav-item nav-link" href="{{ url_for('study') }}">我的仓库信息</a>
                 {% endblock %}
             </div>
         </div>
@@ -75,7 +75,7 @@
         <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
             <div class="col-md-12 px-0">
                 <h1 class="font-italic">Mining Core Contributors in Open-Source Projects</h1>
-                <p class="lead my-3">该网站是校级大学生创新项目“开源代码仓库的可视化挖掘”》的项目演示</p>
+                <p class="lead my-3">该网站是校级大学生创新项目“开源代码仓库的可视化挖掘”的项目演示</p>
                 <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">To Be Continued</a></p>
             </div>
         </div>
@@ -96,7 +96,7 @@
     {% block footer %}
         <small> &copy; 2019 <a href="https://github.com/Tsunaou" title="Written by Tsunaou">Young</a> /
             <a href="https://github.com/Tsunaou" title="Fork me on GitHub">GitHub</a> /
-            <a href="https://github.com/Tsunaou/Website-Design" title="Website-Design Course Works">Website-Design</a>
+            <a href="https://github.com/OpenSrcRepoDataMining" title="Website-Design Course Works">OpenSrcRepoDataMining</a>
         </small>
     {% endblock %}
 </footer>

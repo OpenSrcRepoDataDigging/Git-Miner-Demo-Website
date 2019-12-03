@@ -6,10 +6,13 @@ from BlogForms import LoginForm, RegisterForm, UploadForm, BlogForm, DeleteForm,
 import uuid
 import time
 from DB_options import  DB_options,SQLite_Options
-
+from JavaGitMiner import GitMiner
+from repoDB_Options import repoDB_Options
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12)
+git_miner = GitMiner()
+
 
 @app.before_request
 def before_request():
@@ -37,23 +40,23 @@ def home():
 def input_url():
     return render_template('input_url.html')
 
-# 博客
+# 展示目前已经有的git项目
 @app.route('/study')
 def study():
     if not session.get('logged_in'):
         return render_template('study_basic.html')
     else:
         username = session.get('username')
-        sql = SQLite_Options()
-        contents = sql.getStudentsCourses(username)
+        repoDB = repoDB_Options()
+        repo_status = repoDB.get_repo_status()
         return render_template(
             'study.html',
             username = username,
-            contents = contents
+            repo_status = repo_status
         )
 
-
-@app.route('/mooc',methods=['GET','POST'])
+# 输入一个url,然后git clone
+@app.route('/gitclone',methods=['GET','POST'])
 def mooc():
     if not session.get('logged_in'):
         return render_template('study_basic.html')
@@ -62,11 +65,12 @@ def mooc():
         form = GitCloneForm()
 
         return render_template(
-            'mooc.html',
+            'gitclone.html',
             username = username,
             form = form,
         )
 
+# 实际对git clone进行处理
 @app.route('/action_clone', methods=['POST'])
 def action_clone():
     if not session.get('logged_in'):
@@ -74,17 +78,20 @@ def action_clone():
     else:
         username = session.get('username')
         form = GitCloneForm()
-
         url = ''
         if form.validate_on_submit():
             url = form.url.data
-            '''
-                此处虚假调用Java代码，然后一系列处理吧
-            '''
-            return redirect(url_for('study'))
+            if len(url) == 0:
+                flash("未输入URL，直接进入")
+                return redirect(url_for('study'))
+            else:
+                res = git_miner.git_clone(url)
+                if(res == 0):
+                    flash("Git clone 成功")
+                return redirect(url_for('study'))
 
         return render_template(
-            'mooc.html',
+            'gitclone.html',
             username=username,
             form=form,
         )
@@ -125,6 +132,7 @@ def login():
         form=form
     )
 
+# 用户登录
 @app.route('/action_login', methods=['POST'])
 def action_login():
     form = LoginForm()
@@ -157,7 +165,7 @@ def register():
         form=form
     )
 
-
+# 用户注册（Git项目暂不需要）
 @app.route('/action_register', methods=['POST'])
 def action_register():
     form = RegisterForm()
@@ -192,7 +200,7 @@ def action_register():
         form=form
     )
 
-# 用户注销
+# 用户注销（Git项目暂不需要）
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session['logged_in'] = False
@@ -205,25 +213,25 @@ def quick_login():
     session['username'] = '1001'
     return home()
 
-# MySQL数据展示
+# 数据库数据展示
 @app.route('/sql_test')
 def sql_display():
-    sql = SQLite_Options() #  管理前期数据库操作的类
-    authors = sql.select('STUDENTS')
-    librarys = sql.select('COURSE')
-    list = sql.select('STUDY')
+    repoDB = repoDB_Options()
+    repo_status = repoDB.get_repo_status()
     return render_template(
         "sql_test.html",
-        authors=authors,
-        librarys = librarys,
-        list = list
+        repo_status=repo_status,
     )
 
+# 获取图片地址
 @app.route('/upload/<path:filename>')
 def get_file(filename):
     print('get_file:',filename)
-    return send_from_directory(app.root_path+'\\uploads',filename)
+    file_url = send_from_directory(app.root_path+'\\uploads',filename)
+    print('file_url', file_url)
+    return file_url
 
+# 废弃（Git项目暂不需要）
 @app.route('/study/<path:cid>')
 def choose_course(cid):
     print('choose',cid)
@@ -232,12 +240,14 @@ def choose_course(cid):
     sql.selectCourse(sid=username,cid=cid)
     return redirect(url_for('mooc'))
 
+# 查看项目具体信息
 @app.route('/study/study_course/<path:cid>')
 def study_course(cid):
     username = session.get('username')
-    sql = SQLite_Options()
-    sql.studyCourse(sid=username,cid=cid)
-    # return redirect(url_for('study'))
+    # TODO: 这里需要从数据库读取数据
+    # sql = SQLite_Options()
+    # sql.studyCourse(sid=username,cid=cid)
+    # # return redirect(url_for('study'))
     return render_template(
         "study_content.html",
         username = username

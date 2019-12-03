@@ -1,0 +1,27 @@
+{% extends 'study_basic.html' %}
+{% from 'macros_form.html' import form_field%}
+{% from 'table_macros.html' import table_macros %}
+
+{% block postcard %}
+{% endblock %}
+
+{% block user_info %}
+    <span>欢迎您，{{ username }}</span>
+    <div style="width: 20px;height: 20px"></div>
+    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('logout') }}">注销</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <br>
+        <a href="{{ url_for('home') }}">&larr; Return</a>
+        <h1 class="display-4">Git Clone</h1>
+        <hr>
+        <form method="post" action="{{ url_for('action_clone') }}" >
+            {{ form.csrf_token }}
+            {{ form.url(class="form-control mr-sm-2", type="key") }}
+            <br/>
+            {{ form.clone(class='btn btn-primary') }}
+        </form>
+    </div>
+{% endblock %}
