@@ -36,6 +36,32 @@ class repoDB_Options():
 		repo_status = self.execute("SELECT * FROM REPOSTATUS")
 		return repo_status
 
+	# 获得每个日期开发者的commit次数
+	def get_CommitTimesListByDay(self, repo_name):
+		dates = ['2012', '2013', '2014','2015','2016']
+		commits = []
+		commits.append({
+			'name': 'name1',
+			'data': [320, 332, 301, 334, 390]
+		})
+		commits.append({
+			'name': 'name1',
+			'data': [220, 182, 191, 234, 290]
+		})
+		commits.append({
+			'name': 'name1',
+			'data': [150, 232, 201, 154, 190]
+		})
+		commits.append({
+			'name': 'name1',
+			'data': [98, 77, 101, 99, 40]
+		})
+
+		commitTimesListByDay = {}
+		commitTimesListByDay['dates'] = dates
+		commitTimesListByDay['commits'] = commits
+
+		return commitTimesListByDay
 
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
