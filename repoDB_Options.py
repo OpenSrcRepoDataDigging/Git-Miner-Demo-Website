@@ -2,10 +2,11 @@ from pprint import pprint
 
 import pymysql
 import sqlite3
+import getpass
 
 class repoDB_Options():
 
-	def __init__(self,database = '/home/young/.gitminer/repo.db') -> None:
+	def __init__(self,database = '/home/' + getpass.getuser() + '/.gitminer/repo.db') -> None:
 		super().__init__()
 		self.database = database
 
