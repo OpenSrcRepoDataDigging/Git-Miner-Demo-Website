@@ -23,7 +23,8 @@ class GitMiner():
 
 if __name__ == '__main__':
 	git_miner = GitMiner()
-	git_miner.git_clone(url="git@github.com:NJU-Trust/DailyPlan.git")
+	res = git_miner.git_clone(url="git@github.com:OpenSrcRepoDataMining/alluxio.git")
+	print(res)
 
     
 

@@ -92,7 +92,7 @@ def action_clone():
 				return redirect(url_for('repositories'))
 			else:
 				# 异步执行任务
-				executor.submit(git_miner.git_clone,url)
+				executor.submit(git_miner.git_clone, url)
 				return redirect(url_for('repositories'))
 
 		return render_template(
@@ -100,6 +100,7 @@ def action_clone():
 			username=username,
 			form=form,
 		)
+
 
 # 废弃
 @app.route('/study-content/<blog_title>')
@@ -260,12 +261,18 @@ def show_repositories(repo_name):
 	username = session.get('username')
 	# TODO: 这里需要从数据库读取数据
 	index = repoDB.get_repo_index(repo_name)
-	commit_times_list_by_day = repoDB.get_CommitTimesListByDay('CommitTimesListByDay'+index)
+	# commit次数，贡献者，日期
+	commit_times_list_by_day = repoDB.get_CommitTimesListByDay('CommitTimesListByDay' + index)
 	print('commit_times_list_by_day', commit_times_list_by_day)
+	# 协作关系图
+	contributor_network_matrix = repoDB.get_ContributorNetworkMatrix('ContributorNetworkMatrix' + index)
+	print('contributor_network_matrix', contributor_network_matrix)
+
 	return render_template(
 		"repositories_content.html",
 		username=username,
-		commit_times_list_by_day=commit_times_list_by_day
+		commit_times_list_by_day=commit_times_list_by_day,
+		contributor_network_matrix=contributor_network_matrix
 	)
 
 
