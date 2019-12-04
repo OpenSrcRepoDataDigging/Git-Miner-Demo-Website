@@ -221,7 +221,7 @@ def logout():
 @app.route('/quick_login', methods=['GET', 'POST'])
 def quick_login():
 	session['logged_in'] = True
-	session['username'] = '1001'
+	session['username'] = '测试用户'
 	return home()
 
 

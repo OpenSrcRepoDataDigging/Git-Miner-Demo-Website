@@ -21,18 +21,24 @@
                     <table class="table table-hover">
                         <thead>
                         <th>项目名</th>
-                        <th>项目远程地址</th>
+{#                        <th>项目远程地址</th>#}
                         {#                            <th>项目本地地址</th>#}
                         {#                            <th>项目添加时间</th>#}
+                        <th>状态</th>
                         <th>详情</th>
                         </thead>
                         <tbody>
                         {% for repo in repo_status %}
                             <tr>
                                 <td>{{ repo.REPONAME }}</td>
-                                <td>{{ repo.REPOURL }}</td>
+{#                                <td>{{ repo.REPOURL }}</td>#}
                                 {#                                <td>{{ repo.REPOLOCALPATH }}</td>#}
                                 {#                                <td>{{ repo.CLONETIME }}</td>#}
+                                <td>
+                                    <button type="button" class="btn  btn-success">
+                                        成功 <span class="badge badge-light">1</span>
+                                    </button>
+                                </td>
                                 <td><a href="{{ url_for('show_repositories',repo_name =repo.REPONAME) }}">详情</a></td>
                             </tr>
                         {% endfor %}
@@ -55,21 +61,24 @@
                     <!-- 轮播图片 -->
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="{{ url_for('static', filename='images/github.jpg') }}" height="300px" width="300px">
+                            <img src="{{ url_for('static', filename='images/github.jpg') }}" height="300px"
+                                 width="300px">
                             <div class="carousel-caption">
                                 <h3>Github</h3>
                                 <p>GitHub是一个面向开源及私有软件项目的托管平台</p>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="{{ url_for('static', filename='images/gitlab.png') }}" height="300px" width="300px">
+                            <img src="{{ url_for('static', filename='images/gitlab.png') }}" height="300px"
+                                 width="300px">
                             <div class="carousel-caption">
                                 <h3>Gitlab</h3>
                                 <p>GitLab 是一个用于仓库管理系统的开源项目</p>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="{{ url_for('static', filename='images/codeCloud.jpg') }}" height="300px" width="300px">
+                            <img src="{{ url_for('static', filename='images/codeCloud.jpg') }}" height="300px"
+                                 width="300px">
                             <div class="carousel-caption">
                                 <h3>码云</h3>
                                 <p>码云 Gitee - 云端软件开发协作平台</p>
