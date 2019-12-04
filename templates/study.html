@@ -33,7 +33,7 @@
                                 <td>{{ repo.REPOURL }}</td>
                                 {#                                <td>{{ repo.REPOLOCALPATH }}</td>#}
                                 {#                                <td>{{ repo.CLONETIME }}</td>#}
-                                <td><a href="{{ url_for('study_course',cid =repo.REPONAME) }}">详情</a></td>
+                                <td><a href="{{ url_for('study_course',repo_name =repo.REPONAME) }}">详情</a></td>
                             </tr>
                         {% endfor %}
                         </tbody>

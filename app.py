@@ -254,11 +254,12 @@ def choose_course(cid):
 
 
 # 查看项目具体信息
-@app.route('/study/study_course/<path:cid>')
-def study_course(cid):
+@app.route('/study/study_course/<repo_name>')
+def study_course(repo_name):
 	username = session.get('username')
 	# TODO: 这里需要从数据库读取数据
-	commit_times_list_by_day = repoDB.get_CommitTimesListByDay('CommitTimesListByDay1')
+	index = repoDB.get_repo_index(repo_name)
+	commit_times_list_by_day = repoDB.get_CommitTimesListByDay('CommitTimesListByDay'+index)
 	print('commit_times_list_by_day', commit_times_list_by_day)
 	return render_template(
 		"study_content.html",
