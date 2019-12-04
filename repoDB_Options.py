@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pymysql
 import sqlite3
 
@@ -18,7 +20,7 @@ class repoDB_Options():
 		self.connect()
 		# 制定数据形式
 		self.conn.row_factory = sqlite3.Row
-		print("Opened %s successfully",self.database)
+		print("Opened %s successfully"%self.database)
 		c = self.conn.cursor()
 		cursor = c.execute(sql_command)
 		datas = cursor.fetchall()
@@ -32,37 +34,42 @@ class repoDB_Options():
 		# 返回数据
 		return datas
 
+	def get_colname(self, repo_name):
+		self.connect()
+		cur = self.conn.cursor()
+		cur.execute("SELECT * FROM {}".format(repo_name))
+		datas = cur.fetchall()
+		col_name_list = [tuple[0] for tuple in cur.description]
+		res = []
+		res.append(col_name_list)
+		for data in datas:
+			res.append(list(data))
+		return res
+
 	def get_repo_status(self):
 		repo_status = self.execute("SELECT * FROM REPOSTATUS")
 		return repo_status
 
 	# 获得每个日期开发者的commit次数
 	def get_CommitTimesListByDay(self, repo_name):
-		dates = ['2012', '2013', '2014','2015','2016']
-		commits = []
-		commits.append({
-			'name': 'name1',
-			'data': [320, 332, 301, 334, 390]
-		})
-		commits.append({
-			'name': 'name1',
-			'data': [220, 182, 191, 234, 290]
-		})
-		commits.append({
-			'name': 'name1',
-			'data': [150, 232, 201, 154, 190]
-		})
-		commits.append({
-			'name': 'name1',
-			'data': [98, 77, 101, 99, 40]
-		})
+		commitTimesListByDay = [
+			['contributor', '欧阳', '刘笑今', '白家杨','刘岚峰'],
+			['2015', 43.3, 85.8, 93.7, 83.1],
+			['2016', 83.1, 73.4, 55.1, 86.4],
+			['2017', 86.4, 65.2, 82.5, 72.4],
+			['2018', 72.4, 53.9, 39.1, 7.4],
+			['2019', 7.4, 45.9, 66.1, 42.4],
+			['2020', 42.4, 22.9, 19.1, 43.3]
+		]
 
-		commitTimesListByDay = {}
-		commitTimesListByDay['dates'] = dates
-		commitTimesListByDay['commits'] = commits
+		datas = self.get_colname(repo_name)
 
-		return commitTimesListByDay
+		return datas
+
+
 
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
-	datas = repoDB.get_repo_status()
+	# datas = repoDB.get_repo_status()
+	datas = repoDB.get_CommitTimesListByDay('CommitTimesListByDay1')
+	print(datas)

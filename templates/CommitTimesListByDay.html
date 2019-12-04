@@ -1,27 +1,37 @@
-{% macro commitTimesListByDay(data) %}
+{% macro commitTimesListByDay(commit_times_list_by_day) %}
     <div id="main1" style="width: 800px;height:500px;margin: 0 auto;"></div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart1 = echarts.init(document.getElementById('main1'));
-        // 指定图表的配置项和数据
+        // 指定图表的配置项和数据(注意要用tojson)
+        var src_data = {{ commit_times_list_by_day|tojson }};
+        console.log(src_data);
         var option1 = {
-            title: {
-                text: 'ECharts 入门示例'
-            },
+            legend: {},
             tooltip: {},
-            legend: {
-                data: ['销量']
+            dataset: {
+                source: src_data
             },
-            xAxis: {
-                data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
             },
+            xAxis: {type: 'category'},
             yAxis: {},
-            series: [{
-                name: '销量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [
+                {% for foo in range((commit_times_list_by_day[0]|length - 1)) %}
+                    {type: 'bar'},
+                {% endfor %}
+            ]
         };
+
         // 使用刚指定的配置项和数据显示图表。
         myChart1.setOption(option1);
     </script>
