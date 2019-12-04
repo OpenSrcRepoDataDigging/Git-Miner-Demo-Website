@@ -267,12 +267,15 @@ def show_repositories(repo_name):
 	# 协作关系图
 	contributor_network_matrix = repoDB.get_ContributorNetworkMatrix('ContributorNetworkMatrix' + index)
 	print('contributor_network_matrix', contributor_network_matrix)
-
+	# 文件贡献图
+	file_contributor_matrix = repoDB.get_FileContributorMatrix('FileContributorMatrix' + index)
+	print('file_contributor_matrix', file_contributor_matrix)
 	return render_template(
 		"repositories_content.html",
 		username=username,
 		commit_times_list_by_day=commit_times_list_by_day,
-		contributor_network_matrix=contributor_network_matrix
+		contributor_network_matrix=contributor_network_matrix,
+		file_contributor_matrix=file_contributor_matrix
 	)
 
 

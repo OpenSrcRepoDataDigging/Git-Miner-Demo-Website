@@ -1,0 +1,68 @@
+{% macro fileContributorMatrix(file_contributor_matrix) %}
+    <div id="main3" style="width: 800px;height:500px;margin: 0 auto;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart3 = echarts.init(document.getElementById('main3'));
+        // 指定图表的配置项和数据(注意要用tojson)
+        var hours = {{ file_contributor_matrix.x | tojson }};
+        var days = {{ file_contributor_matrix.y | tojson }};
+        var data = {{ file_contributor_matrix.data | tojson}}
+
+            data = data.map(function (item) {
+                return [item[1], item[0], item[2] || '-'];
+            });
+
+        var option3 = {
+            tooltip: {
+                position: 'top'
+            },
+            animation: false,
+            grid: {
+                height: '50%',
+                y: '10%'
+            },
+            xAxis: {
+                type: 'category',
+                data: hours,
+                splitArea: {
+                    show: true
+                }
+            },
+            yAxis: {
+                type: 'category',
+                data: days,
+                splitArea: {
+                    show: true
+                }
+            },
+            visualMap: {
+                min: 0,
+                max: 10,
+                calculable: true,
+                orient: 'horizontal',
+                left: 'center',
+                bottom: '15%'
+            },
+            series: [{
+                name: 'Punch Card',
+                type: 'heatmap',
+                data: data,
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart3.setOption(option3);
+    </script>
+{% endmacro %}
+

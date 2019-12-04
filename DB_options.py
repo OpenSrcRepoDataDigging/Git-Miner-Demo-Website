@@ -335,7 +335,7 @@ class DB_options():
             image = row[4]
 
             if image == self.NULL_PICTURE_MAGIC:
-                image = '1.jpg'
+                image = 'photo.jpg'
 
             # 打印结果
             contents.append({
