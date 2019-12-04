@@ -129,6 +129,7 @@ class repoDB_Options():
 		datas['x'] = hours
 		datas['y'] = days
 		datas['data'] = data
+		datas['max'] = 10
 
 		if self.is_table_exist(table_name):
 			names_raw = self.execute("select name from {}".format(table_name))
@@ -138,13 +139,17 @@ class repoDB_Options():
 					names.append(j)
 			infos = self.get_col_and_datas(table_name)
 			data = []
+			max = 10
 			for i in range(1, infos.__len__()):
 				for j in range(1, infos[0].__len__()):
 					data.append([i-1, j-1, infos[i][j]])
+					if infos[i][j] > max:
+						max = infos[i][j]
 
 			datas['x'] = names
 			datas['y'] = names
 			datas['data'] = data
+			datas['max'] = max
 		else:
 			print("表", table_name, "不存在")
 
@@ -183,6 +188,7 @@ class repoDB_Options():
 		datas['x'] = hours
 		datas['y'] = days
 		datas['data'] = data
+		datas['max'] = 10
 
 		if self.is_table_exist(table_name):
 			names_raw = self.execute("select contributor from {}".format(table_name))
@@ -192,13 +198,17 @@ class repoDB_Options():
 					names.append(j)
 			infos = self.get_col_and_datas(table_name)
 			data = []
+			max = 10
 			for i in range(1, infos.__len__()):
 				for j in range(1, infos[0].__len__()):
 					data.append([i - 1, j - 1, infos[i][j]])
+					if infos[i][j] > max:
+						max = infos[i][j]
 
 			datas['x'] = infos[0][1:]
 			datas['y'] = names
 			datas['data'] = data
+			datas['max'] = max
 		else:
 			print("表", table_name, "不存在")
 

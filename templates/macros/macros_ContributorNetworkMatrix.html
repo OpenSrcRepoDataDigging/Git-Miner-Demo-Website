@@ -6,9 +6,10 @@
         // 指定图表的配置项和数据(注意要用tojson)
         var hours = {{ contributor_network_matrix.x | tojson }};
         var days = {{ contributor_network_matrix.y | tojson }};
-        var data = {{ contributor_network_matrix.data | tojson}}
+        var data = {{ contributor_network_matrix.data | tojson}};
+        var max = {{ contributor_network_matrix.max }}
 
-            data = data.map(function (item) {
+        data = data.map(function (item) {
             return [item[1], item[0], item[2] || '-'];
         });
 
@@ -37,7 +38,7 @@
             },
             visualMap: {
                 min: 0,
-                max: 10,
+                max: max,
                 calculable: true,
                 orient: 'horizontal',
                 left: 'center',

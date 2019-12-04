@@ -6,11 +6,12 @@
         // 指定图表的配置项和数据(注意要用tojson)
         var hours = {{ file_contributor_matrix.x | tojson }};
         var days = {{ file_contributor_matrix.y | tojson }};
-        var data = {{ file_contributor_matrix.data | tojson}}
+        var data = {{ file_contributor_matrix.data | tojson}};
+        var max = {{ file_contributor_matrix.max }}
 
-            data = data.map(function (item) {
-                return [item[1], item[0], item[2] || '-'];
-            });
+        data = data.map(function (item) {
+            return [item[1], item[0], item[2] || '-'];
+        });
 
         var option3 = {
             tooltip: {
@@ -37,7 +38,7 @@
             },
             visualMap: {
                 min: 0,
-                max: 10,
+                max: max,
                 calculable: true,
                 orient: 'horizontal',
                 left: 'center',
