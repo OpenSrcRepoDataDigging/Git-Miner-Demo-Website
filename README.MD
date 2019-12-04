@@ -1,6 +1,6 @@
 # Git-Miner-Demo-Website
 
-
+## 在图的旁边对指标做一定的文字解释，可以显著提升展示效果。这一点在以后再添加，写在这里以备忘。
 
 ### Tab1: 展示仓库的基本信息
 - 目标仓库的首页README.md：数据来源：/home/+username+/.gitminer/repoID/repo/{README, readme}.{MD, md}
@@ -22,3 +22,29 @@
     
     
 ### Tab2：贡献演化
+
+#### 总commit曲线
+- 数据在CommitListByDay+repoID表中，All那一列。
+- echarts参考：https://www.echartsjs.com/examples/en/editor.html?c=line-simple
+
+#### 总-分类commit曲线
+- 数据在"ClassifiedCommitList" + repoID表中，All那一列。数据格式为add-del-fix-mod。
+- echarts参考 https://www.echartsjs.com/examples/en/editor.html?c=line-stack
+
+#### 条形码
+- 总的条形码
+- Top5(orderby commits数量)的条形码
+- 数据来源：CommitListByDay+repoID表中
+- 涉及到数据库的连接，嵌套子查询可以解决
+#### Top5贡献折线图
+- 数据在ClassfiedCommitList+repoID中，与条形码数据一致
+- echarts参考 https://www.echartsjs.com/examples/en/editor.html?c=line-stack 建议与总-分类commit曲线选择不同的色调以区分不同的图
+
+### Tab3：空间分布
+- heatmap。已实现
+
+### Tab4：协作关系
+
+#### 贡献者网络 - 无向带权图
+- 数据在ContributorNetworkMatrix+repoID中，形式为邻接矩阵
+- echarts参考：https://www.echartsjs.com/examples/en/editor.html?c=graph  只取一个类别
