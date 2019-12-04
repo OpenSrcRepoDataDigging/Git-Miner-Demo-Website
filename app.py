@@ -1,6 +1,7 @@
 from flask import Flask, g, current_app, render_template
 import os
 import sqlite3
+from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, render_template, flash, redirect, url_for, request, send_from_directory, session
 from BlogForms import LoginForm, RegisterForm, UploadForm, BlogForm, DeleteForm, Search_Form, GitCloneForm
 import uuid
@@ -13,6 +14,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(12)
 git_miner = GitMiner()
 repoDB = repoDB_Options()
+executor = ThreadPoolExecutor(2)
 
 
 @app.before_request
@@ -32,7 +34,7 @@ def teardown(error):
 @app.route('/')
 def home():
 	if not session.get('logged_in'):
-		return render_template('study_basic.html')
+		return render_template('repositories_basic.html')
 	else:
 		return redirect(url_for('mooc'))
 
@@ -44,15 +46,15 @@ def input_url():
 
 
 # 展示目前已经有的git项目
-@app.route('/study')
-def study():
+@app.route('/repositories')
+def repositories():
 	if not session.get('logged_in'):
-		return render_template('study_basic.html')
+		return render_template('repositories_basic.html')
 	else:
 		username = session.get('username')
 		repo_status = repoDB.get_repo_status()
 		return render_template(
-			'study.html',
+			'repositories.html',
 			username=username,
 			repo_status=repo_status
 		)
@@ -62,7 +64,7 @@ def study():
 @app.route('/gitclone', methods=['GET', 'POST'])
 def mooc():
 	if not session.get('logged_in'):
-		return render_template('study_basic.html')
+		return render_template('repositories_basic.html')
 	else:
 		username = session.get('username')
 		form = GitCloneForm()
@@ -78,7 +80,7 @@ def mooc():
 @app.route('/action_clone', methods=['POST'])
 def action_clone():
 	if not session.get('logged_in'):
-		return render_template('study_basic.html')
+		return render_template('repositories_basic.html')
 	else:
 		username = session.get('username')
 		form = GitCloneForm()
@@ -87,12 +89,11 @@ def action_clone():
 			url = form.url.data
 			if len(url) == 0:
 				flash("未输入URL，直接进入")
-				return redirect(url_for('study'))
+				return redirect(url_for('repositories'))
 			else:
-				res = git_miner.git_clone(url)
-				if (res == 0):
-					flash("Git clone 成功")
-				return redirect(url_for('study'))
+				# 异步执行任务
+				executor.submit(git_miner.git_clone,url)
+				return redirect(url_for('repositories'))
 
 		return render_template(
 			'gitclone.html',
@@ -100,7 +101,7 @@ def action_clone():
 			form=form,
 		)
 
-
+# 废弃
 @app.route('/study-content/<blog_title>')
 def get_blog_content(blog_title):
 	username = session.get('username')
@@ -113,19 +114,19 @@ def get_blog_content(blog_title):
 			content = items
 
 	return render_template(
-		'study_content.html',
+		'repositories_content.html',
 		username=username,
 		content=content
 	)
 
 
-@app.route('/study-content')
-def study_content():
+@app.route('/repositories_content')
+def repositories_content():
 	if not session.get('logged_in'):
-		return render_template('study_basic.html')
+		return render_template('repositories_basic.html')
 	else:
 		return render_template(
-			'study_content.html',
+			'repositories_content.html',
 			username=session.get('username')
 		)
 
@@ -244,8 +245,8 @@ def get_file(filename):
 
 
 # 废弃（Git项目暂不需要）
-@app.route('/study/<path:cid>')
-def choose_course(cid):
+@app.route('/repositories/<path:cid>')
+def choose_repository(cid):
 	print('choose', cid)
 	username = session.get('username')
 	sql = SQLite_Options()
@@ -254,15 +255,15 @@ def choose_course(cid):
 
 
 # 查看项目具体信息
-@app.route('/study/study_course/<repo_name>')
-def study_course(repo_name):
+@app.route('/repositories/show_repositories/<repo_name>')
+def show_repositories(repo_name):
 	username = session.get('username')
 	# TODO: 这里需要从数据库读取数据
 	index = repoDB.get_repo_index(repo_name)
 	commit_times_list_by_day = repoDB.get_CommitTimesListByDay('CommitTimesListByDay'+index)
 	print('commit_times_list_by_day', commit_times_list_by_day)
 	return render_template(
-		"study_content.html",
+		"repositories_content.html",
 		username=username,
 		commit_times_list_by_day=commit_times_list_by_day
 	)

@@ -20,6 +20,7 @@ class GitMiner():
 		print(res)
 		return res
 
+
 if __name__ == '__main__':
 	git_miner = GitMiner()
 	git_miner.git_clone(url="git@github.com:NJU-Trust/DailyPlan.git")
