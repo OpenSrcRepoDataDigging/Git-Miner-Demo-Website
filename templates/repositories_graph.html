@@ -1,0 +1,22 @@
+{% extends 'repositories.html' %}
+{% from 'macros/macros_form.html' import form_field %}
+{% from 'macros/macros_CommitTimesListByDay.html' import commitTimesListByDay %}
+{% from 'macros/macros_ContributorNetworkMatrix.html' import contributorNetworkMatrix %}
+{% from 'macros/macros_FileContributorMatrix.html' import fileContributorMatrix %}
+{% from 'macros/macros_RepoBaseInformation.html' import repoBaseInformation %}
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/echarts.js') }}"></script>
+{% endblock %}
+
+{% block title %}
+    {{ super() }}
+    项目内容
+{% endblock %}
+
+{% block content %}
+    <div>
+        {{ fileContributorMatrix(file_contributor_matrix, repo_name, 3000,1000) }}
+    </div>
+{% endblock %}
+
