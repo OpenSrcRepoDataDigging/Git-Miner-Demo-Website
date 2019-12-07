@@ -45,23 +45,21 @@ class repoDB_Options():
 		res['start_time'] = '2010'  # 建立时间
 		res['top_ten_commits'] = []
 		for i in range(10):
-			res['top_ten_commits'].append({'name': 'x'+str(i), 'commits': 10-i})
+			res['top_ten_commits'].append({'name': 'x' + str(i), 'commits': 10 - i})
 		# 下面是弗雷歇距离参照 https://www.echartsjs.com/examples/en/editor.html?c=dataset-encode0&theme=light
-		source =  [
-            ['frechet', 'commits', 'contributor'],
-            [89.3, 58212, 'Matcha Latte'],
-            [57.1, 78254, 'Milk Tea'],
-            [74.4, 41032, 'Cheese Cocoa'],
-            [50.1, 12755, 'Cheese Brownie'],
-            [89.7, 20145, 'Matcha Cocoa'],
-            [68.1, 79146, 'Tea'],
-            [19.6, 91852, 'Orange Juice'],
-            [10.6, 101852, 'Lemon Juice'],
-            [32.7, 20112, 'Walnut Brownie']
-        ]
+		source = [
+			['frechet', 'commits', 'contributor'],
+			[89.3, 58212, 'Matcha Latte'],
+			[57.1, 78254, 'Milk Tea'],
+			[74.4, 41032, 'Cheese Cocoa'],
+			[50.1, 12755, 'Cheese Brownie'],
+			[89.7, 20145, 'Matcha Cocoa'],
+			[68.1, 79146, 'Tea'],
+			[19.6, 91852, 'Orange Juice'],
+			[10.6, 101852, 'Lemon Juice'],
+			[32.7, 20112, 'Walnut Brownie']
+		]
 		res['top_ten_frechet'] = source
-
-
 
 		return res
 
@@ -124,6 +122,16 @@ class repoDB_Options():
 			print("表", table_name, "不存在")
 		return datas
 
+	# TODO: 从数据库读取格式化数据
+	def get_ClassifiedCommitList(self, table_name):
+		res = dict()
+		res['date'] = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+		res['add'] = [120, 132, 101, 134, 90, 230, 210]
+		res['delete'] = [220, 182, 191, 234, 290, 330, 310]
+		res['mod'] = [150, 232, 201, 154, 190, 330, 410]
+		res['fix'] = [320, 332, 301, 334, 390, 330, 320]
+		return res
+
 	def get_ContributorNetworkMatrix(self, table_name):
 		# 数据原型
 		datas = {}
@@ -158,6 +166,10 @@ class repoDB_Options():
 		datas['y'] = days
 		datas['data'] = data
 		datas['max'] = 10
+
+		nodes, links = self.get_ContributorNetworkGraph(table_name)
+		datas['nodes'] = nodes
+		datas['links'] = links
 
 		if self.is_table_exist(table_name):
 			names_raw = self.execute("select name from {}".format(table_name))
@@ -233,7 +245,6 @@ class repoDB_Options():
 					if infos[j][i] > max:
 						max = infos[j][i]
 
-
 			datas['x'] = names
 			datas['y'] = infos[0][1:]
 
@@ -243,6 +254,30 @@ class repoDB_Options():
 			print("表", table_name, "不存在")
 
 		return datas
+
+	# TODO: 从数据库获取数据自定义节点和边
+	def get_ContributorNetworkGraph(self, table_name):
+		nodes = [{
+			'name': '南小紫',
+			'creditPts': 97,
+			'financialPts': 85,
+			'schoolPts': 67,
+		}, {
+			'name': '张秀英',
+			'creditPts': 97,
+			'financialPts': 85,
+			'schoolPts': 67,
+			'creditChange': 1,
+		}]
+
+		links = [{
+			'source': '南小紫',
+			'target': '张秀英',
+			'name': '同学',
+			'relation': '您最近的关系没什么变化'
+		}]
+
+		return nodes,links
 
 	# 格式化输出
 	def print_format_datas(self, datas):

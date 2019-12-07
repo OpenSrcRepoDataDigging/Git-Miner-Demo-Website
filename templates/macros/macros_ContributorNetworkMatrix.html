@@ -102,7 +102,7 @@
                     type: 'graph',
                     layout: 'force',
                     symbolSize: 60,//一般大小
-                    roam: false, //是否开启鼠标缩放和平移漫游。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+                    roam: true, //是否开启鼠标缩放和平移漫游。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
                     focusNodeAdjacency: true,
                     // symbol: 'pin',
                     edgeSymbol: ['circle', 'none'],
@@ -125,6 +125,7 @@
                             color: '#409EFF',
                         }
                     },
+                    // 默认的lineStyle
                     lineStyle: {
                         normal: {
                             width: 3,
@@ -165,134 +166,68 @@
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
-                        symbolSize: 100,
-                        itemStyle: {
-                            normal: {
-                                // color : '#409EFF'
-                                color: {
-                                    type: 'linear',
-                                    x: 0,
-                                    y: 0,
-                                    x2: 0,
-                                    y2: 1,
-                                    colorStops: [{
-                                        offset: 0, color: '#7853de' // 0% 处的颜色
-                                    }, {
-                                        offset: 1, color: '#409EFF' // 100% 处的颜色
-                                    }],
-                                    globalCoord: false, // 缺省为 false
-                                }
-                            }
-                        },
                     }, {
                         name: '张秀英',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: 1,
-                        itemStyle: {
-                            normal: {
-                                color: '#5db2ff',
-                            }
-                        },
                     }, {
                         name: '王桐',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: 2,
-                        itemStyle: {
-                            normal: {
-                                color: '#409EFF',
-                            }
-                        },
                     }, {
                         name: '罗子俊',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: 1,
-                        itemStyle: {
-                            normal: {
-                                color: '#5db2ff',
-                            }
-                        },
                     }, {
                         name: '付贺然',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: -3,
-                        itemStyle: {
-                            normal: {
-                                color: '#fa6862',
-                            }
-                        },
                     }, {
                         name: '陈文博',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: -3,
-                        itemStyle: {
-                            normal: {
-                                color: '#fa6862',
-                            }
-                        },
                     }, {
                         name: '吴欣怡',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: 2,
-                        itemStyle: {
-                            normal: {
-                                color: '#409EFF',
-                            }
-                        },
                     }, {
                         name: '刘浩',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: -2,
-                        itemStyle: {
-                            normal: {
-                                color: '#afb8c2',
-                            }
-                        },
                     }, {
                         name: '张一帆',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: 0,
-                        normal: {
-                            color: '#244767',
-                        }
                     }, {
                         name: '李艺璇',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: -1,
-                        itemStyle: {
-                            normal: {
-                                color: '#7ac2ff',
-                            }
-                        },
                     }, {
                         name: '王刚',
                         creditPts: 97,
                         financialPts: 85,
                         schoolPts: 67,
                         creditChange: -1,
-                        itemStyle: {
-                            normal: {
-                                color: '#7ac2ff',
-                            }
-                        },
                     }],
+                    data : {{ contributor_network_matrix.nodes | tojson }},
                     // links: [],
                     links: [{
                         source: '南小紫',
@@ -357,9 +292,11 @@
                         lineStyle: {
                             normal: {
                                 type: 'solid',
+                                width: 5
                             }
                         },
                     }],
+                    links : {{ contributor_network_matrix.links | tojson }}
                 }
             ]
         }

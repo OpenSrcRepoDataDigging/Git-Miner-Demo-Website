@@ -1,7 +1,6 @@
 {% macro fileContributorMatrix(file_contributor_matrix, repo_name, height, width) %}
     <div style="margin: 15px">
-        <h5>1.文件贡献矩阵 </h5>
-        <a href="{{ url_for('show_file_contributor_matrix', repo_name = repo_name) }}">大图</a>
+        <a href="{{ url_for('show_file_contributor_matrix', repo_name = repo_name) }}"><h5>1.文件贡献矩阵 </h5></a>
         {% if height == 0 %}
             <div id="main3" style="width: 800px;height:800px;margin: 0 auto;"></div>
         {% else %}
