@@ -61,6 +61,9 @@ class repoDB_Options():
 		]
 		res['top_ten_frechet'] = source
 
+		return res
+
+		# TODO：现在从0开始构建，没有这些文件，Run不起来呀
 		source = []
 		header = ['frechet', 'commits', 'contributor']
 		source.append(header)
@@ -138,6 +141,7 @@ class repoDB_Options():
 
 	# 获得每个日期开发者的commit次数
 	def get_CommitTimesListByDay(self, table_name):
+		res = dict()
 		# 数据原型
 		datas = [
 			['contributor', '没有', '这个', '对应的', '数据'],
@@ -148,11 +152,53 @@ class repoDB_Options():
 			['2019', 7.4, 45.9, 66.1, 42.4],
 			['2020', 42.4, 22.9, 19.1, 43.3]
 		]
+		classify = dict()
+		classify['date'] = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+		classify['add'] = [120, 132, 101, 134, 90, 230, 210]
+		classify['delete'] = [220, 182, 191, 234, 290, 330, 310]
+		classify['mod'] = [150, 232, 201, 154, 190, 330, 410]
+		classify['fix'] = [320, 332, 301, 334, 390, 330, 320]
+
+		res['commits_list'] = datas
+		res['commits_classify'] = classify
+
+		barcodes = dict()
+		barcode = dict()
+		hours = ['12a', '1a', '2a', '3a', '4a', '5a', '6a',
+				 '7a', '8a', '9a', '10a', '11a',
+				 '12p', '1p', '2p', '3p', '4p', '5p',
+				 '6p', '7p', '8p', '9p', '10p', '11p',
+				 '12a', '1a', '2a', '3a', '4a', '5a', '6a',
+				 '7a', '8a', '9a', '10a', '11a',
+				 '12p', '1p', '2p', '3p', '4p', '5p',
+				 '6p', '7p', '8p', '9p', '10p', '11p'
+				 ]
+		days = ['']
+		data = [[0, 0, 5], [0, 1, 1], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0], [0, 8, 0],
+				[0, 9, 0], [0, 10, 0], [0, 11, 2], [0, 12, 4], [0, 13, 1], [0, 14, 1], [0, 15, 3], [0, 16, 4],
+				[0, 17, 6], [0, 18, 4], [0, 19, 4], [0, 20, 3], [0, 21, 3], [0, 22, 2], [0, 23, 5],
+				[0, 24, 5], [0, 25, 1], [0, 26, 0], [0, 27, 0], [0, 28, 0], [0, 29, 0], [0, 30, 0], [0, 31, 0], [0, 32, 0],
+				[0, 33, 0], [0, 34, 0], [0, 35, 2], [0, 36, 4], [0, 37, 1], [0, 38, 1], [0, 39, 3], [0, 40, 4],
+				[0, 41, 6], [0, 42, 4], [0, 43, 4], [0, 44, 3], [0, 45, 3], [0, 46, 2], [0, 47, 5]
+				]
+		barcode['x'] = hours
+		barcode['y'] = days
+		barcode['data'] = data
+		barcode['max'] = 6
+
+		barcodes['all'] = barcode
+		barcodes['top'] = []
+		for i in range(5):
+			barcodes['top'].append(barcode)
+
+		res['barcodes'] = barcodes
+
 		if self.is_table_exist(table_name):
-			datas = self.get_col_and_datas(table_name)
+			res['commits_list'] = self.get_col_and_datas(table_name)
+			res['commits_classify'] = self.get_ClassifiedCommitList(table_name)
 		else:
 			print("表", table_name, "不存在")
-		return datas
+		return res
 
 	# TODO: 从数据库读取格式化数据
 	def get_ClassifiedCommitList(self, table_name):
@@ -289,6 +335,7 @@ class repoDB_Options():
 
 	# TODO: 从数据库获取数据自定义节点和边
 	def get_ContributorNetworkGraph(self, table_name):
+		# node，表示关系图的节点，除了name，其他可以自定义成任何东西，比如commit，LOC之类的
 		nodes = [{
 			'name': '南小紫',
 			'creditPts': 97,
@@ -300,14 +347,55 @@ class repoDB_Options():
 			'financialPts': 85,
 			'schoolPts': 67,
 			'creditChange': 1,
+		}, {
+			'name': '曹老板',
+			'creditPts': 97,
+			'financialPts': 85,
+			'schoolPts': 67,
+			'creditChange': 1,
 		}]
-
+		# links，表示关系图的边，除了source,target，其他可以自定义成任何东西，需要注意的是width最好是协作的权重
 		links = [{
 			'source': '南小紫',
 			'target': '张秀英',
 			'name': '同学',
-			'relation': '您最近的关系没什么变化'
+			'relation': '您最近的关系没什么变化',
+			'lineStyle': {
+				'normal': {
+					'type': 'dashed',
+					'width': 5
+				}
+			},
+		},{
+			'source': '曹老板',
+			'target': '张秀英',
+			'name': '压迫',
+			'relation': '您最近的关系没什么变化',
+			'lineStyle': {
+				'normal': {
+					'type': 'solid',
+					'width': 3
+				}
+			},
+		},{
+			'source': '曹老板',
+			'target': '南小紫',
+			'name': '压迫',
+			'relation': '您最近的关系没什么变化',
+			'lineStyle': {
+				'normal': {
+					'type': 'solid',
+					'width': 10
+				}
+			},
 		}]
+
+		if self.is_table_exist(table_name):
+			nodes = nodes
+			links = links
+		else:
+			print("表", table_name, "不存在")
+
 
 		return nodes,links
 
@@ -327,11 +415,4 @@ if __name__ == '__main__':
 	repoDB = repoDB_Options()
 	datas = repoDB.get_FileContributorMatrix("FileContributorMatrix1")
 	# datas = repoDB.get_repo_base_information("a")
-<<<<<<< HEAD
-	#datas = repoDB.get_repo_status()
-	#print(datas)
-	repoDB.get_repo_base_information('InvertedIndexWithHbase')
-=======
-	# datas = repoDB.get_repo_status()
-	print(datas)
->>>>>>> 0c93c87d7a029478ce77afb7a036be3459276acf
+

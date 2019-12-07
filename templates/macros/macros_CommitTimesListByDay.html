@@ -1,19 +1,30 @@
+{% from 'macros/macros_BarCode.html' import barCode %}
 {% macro commitTimesListByDay(commit_times_list_by_day) %}
     <div style="margin: 15px">
         <h5>1.总commit曲线</h5>
+        <hr/>
         <div id="main1" style="width: 800px;height:500px;margin: 0 auto;"></div>
+        <hr/>
         <h5>2.总-分类commit曲线</h5>
         <div id="main12" style="width: 800px;height:500px;margin: 0 auto;"></div>
         <h5>3.条形码</h5>
-        <div id="main13" style="width: 800px;height:500px;margin: 0 auto;"></div>
+        <hr/>
+        <h6>3.1 总的条形码</h6>
+        {{ barCode(commit_times_list_by_day.barcodes.all, "ida") }}
+        <h6>3.2 Top5的条形码</h6>
+        {% for i in range(1, 1+commit_times_list_by_day.barcodes.top|length) %}
+            <span>No.{{ i }}</span>
+            {{ barCode(commit_times_list_by_day.barcodes.top[i-1], "idb"+i|string) }}
+        {% endfor %}
+
+
     </div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart1 = echarts.init(document.getElementById('main1'));
         var myChart2 = echarts.init(document.getElementById('main12'));
-        var myChart3 = echarts.init(document.getElementById('main13'));
         // 指定图表的配置项和数据(注意要用tojson)
-        var src_data = {{ commit_times_list_by_day|tojson }};
+        var src_data = {{ commit_times_list_by_day.commits_list|tojson }};
         console.log(src_data);
         var option1 = {
             legend: {},
@@ -35,7 +46,7 @@
             // Declare several bar series, each will be mapped
             // to a column of dataset.source by default.
             series: [
-                {% for foo in range((commit_times_list_by_day[0]|length - 1)) %}
+                {% for foo in range((commit_times_list_by_day.commits_list[0]|length - 1)) %}
                     {type: 'bar'},
                 {% endfor %}
             ]
@@ -61,7 +72,7 @@
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                data: {{ commit_times_list_by_day.commits_classify.date|tojson }}
             },
             yAxis: {
                 type: 'value'
@@ -71,34 +82,32 @@
                     name: 'Add',
                     type: 'line',
                     stack: '总量',
-                    data: [120, 132, 101, 134, 90, 230, 210]
+                    data: {{ commit_times_list_by_day.commits_classify.add|tojson }}
                 },
                 {
                     name: 'Delete',
                     type: 'line',
                     stack: '总量',
-                    data: [220, 182, 191, 234, 290, 330, 310]
+                    data: {{ commit_times_list_by_day.commits_classify.delete|tojson }}
                 },
                 {
                     name: 'Mod',
                     type: 'line',
                     stack: '总量',
-                    data: [150, 232, 201, 154, 190, 330, 410]
+                    data: {{ commit_times_list_by_day.commits_classify.mod|tojson }}
                 },
                 {
                     name: 'Fix',
                     type: 'line',
                     stack: '总量',
-                    data: [320, 332, 301, 334, 390, 330, 320]
+                    data: {{ commit_times_list_by_day.commits_classify.fix|tojson }}
                 },
             ]
         };
 
-
         // 使用刚指定的配置项和数据显示图表。
         myChart1.setOption(option1);
         myChart2.setOption(option2);
-        myChart3.setOption(option1);
     </script>
 {% endmacro %}
 

@@ -33,6 +33,8 @@ class GitMiner():
 		# 执行类中的函数了
 		res = mdg.generateNew(url)
 		print(res)
+		return res
+		# TODO：现在从0开始构建，没有这些文件，Run不起来呀
 		path_prefix = self.get_path_prefix_from_url(url)
 		self.frechet.get_frechet_distance(path_prefix)
 		return res
