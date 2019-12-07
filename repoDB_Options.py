@@ -61,8 +61,38 @@ class repoDB_Options():
         ]
 		res['top_ten_frechet'] = source
 
-
-
+		source = []
+		header = ['frechet', 'commits', 'contributor']
+		source.append(header)
+		#TODO:获得前缀路径
+		dirpath = self.get_repo_path_prefix(repo_name)
+		filename = dirpath + "OvR_Normal_Divide_day.csv"
+		topfilename = dirpath + "frechet_topday.csv"
+		allindex = []
+		allcommit = []
+		allname = []
+		with open(topfilename,'r')as top:
+			for line in top.readlines():
+				line = line.strip()
+				line = line.split(',')
+				allindex.append(int(line[0]))
+				allcommit.append(int(line[2]))
+				allname.append(line[1])
+		with open(filename, 'r')as f:
+			line = f.readline()
+			line = f.readline()
+			line = line.strip()
+			line = line.split(',')
+			for i in range(len(allindex)):
+				insertrow = []
+				index = allindex[i]
+				frechetnum = line[index + 1]
+				insertrow.append(frechetnum)
+				insertrow.append(allcommit[i])
+				insertrow.append(allname[i])
+				source.append(insertrow)
+		print(source)
+		res['top_ten_frechet'] = source
 		return res
 
 	# 获得带有列名的数据库信息
@@ -248,11 +278,16 @@ class repoDB_Options():
 			for item in data:
 				print(item, '\t', end="")
 			print()
-
+	#得到前缀，包括序号的，比如/home/username/.gitminer/0/
+	def get_repo_path_prefix(self, repo_name):
+		prefix = '/home/' + getpass.getuser() + '/.gitminer/'
+		prefix = prefix + str(self.get_repo_index(repo_name)) + '/csv/'
+		return prefix
 
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
 	# datas = repoDB.get_FileContributorMatrix("FileContributorMatrix5")
 	# datas = repoDB.get_repo_base_information("a")
-	datas = repoDB.get_repo_status()
-	print(datas)
+	#datas = repoDB.get_repo_status()
+	#print(datas)
+	repoDB.get_repo_base_information('InvertedIndexWithHbase')
