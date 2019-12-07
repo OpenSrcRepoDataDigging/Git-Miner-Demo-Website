@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     mdg = MainDataGenerator()
 
-    res = mdg.generateNew("https://github.com/MirageLyu/test.git")
+    res = mdg.generateNew("https://github.com/NJU-Trust/DailyPlan")
 
     print(res)
 

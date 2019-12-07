@@ -37,6 +37,32 @@ class repoDB_Options():
 		# 返回数据
 		return datas
 
+	# TODO:展示仓库的基本信息
+	def get_repo_base_information(self, repo_name):
+		res = dict()
+		res['commits'] = 0  # commits总数
+		res['contributors'] = 0  # contributors数量
+		res['start_time'] = '2010'  # 建立时间
+		res['top_ten_commits'] = []
+		for i in range(10):
+			res['top_ten_commits'].append({'name': 'x'+str(i), 'commits': 10-i})
+		# 下面是弗雷歇距离参照 https://www.echartsjs.com/examples/en/editor.html?c=dataset-encode0&theme=light
+		source =  [
+            ['frechet', 'commits', 'contributor'],
+            [89.3, 58212, 'Matcha Latte'],
+            [57.1, 78254, 'Milk Tea'],
+            [74.4, 41032, 'Cheese Cocoa'],
+            [50.1, 12755, 'Cheese Brownie'],
+            [89.7, 20145, 'Matcha Cocoa'],
+            [68.1, 79146, 'Tea'],
+            [19.6, 91852, 'Orange Juice'],
+            [10.6, 101852, 'Lemon Juice'],
+            [32.7, 20112, 'Walnut Brownie']
+        ]
+		res['top_ten_frechet'] = source
+
+		return res
+
 	# 获得带有列名的数据库信息
 	def get_col_and_datas(self, table_name):
 		self.connect()
@@ -142,7 +168,7 @@ class repoDB_Options():
 			max = 10
 			for i in range(1, infos.__len__()):
 				for j in range(1, infos[0].__len__()):
-					data.append([i-1, j-1, infos[i][j]])
+					data.append([i - 1, j - 1, infos[i][j]])
 					if infos[i][j] > max:
 						max = infos[i][j]
 
@@ -224,5 +250,6 @@ class repoDB_Options():
 
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
-	datas = repoDB.get_FileContributorMatrix("FileContributorMatrix5")
+	# datas = repoDB.get_FileContributorMatrix("FileContributorMatrix5")
+	datas = repoDB.get_repo_base_information("a")
 	print(datas)

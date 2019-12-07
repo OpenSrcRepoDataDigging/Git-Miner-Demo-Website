@@ -270,12 +270,17 @@ def show_repositories(repo_name):
 	# 文件贡献图
 	file_contributor_matrix = repoDB.get_FileContributorMatrix('FileContributorMatrix' + index)
 	print('file_contributor_matrix', file_contributor_matrix)
+	# 仓库基本信息
+	repo_base_information = repoDB.get_repo_base_information(repo_name)
+	print('repo_base_information', repo_base_information)
+
 	return render_template(
 		"repositories_content.html",
 		username=username,
 		commit_times_list_by_day=commit_times_list_by_day,
 		contributor_network_matrix=contributor_network_matrix,
-		file_contributor_matrix=file_contributor_matrix
+		file_contributor_matrix=file_contributor_matrix,
+		repo_base_information = repo_base_information
 	)
 
 
