@@ -227,14 +227,16 @@ class repoDB_Options():
 			infos = self.get_col_and_datas(table_name)
 			data = []
 			max = 10
-			for i in range(1, infos.__len__()):
-				for j in range(1, infos[0].__len__()):
-					data.append([i - 1, j - 1, infos[i][j]])
-					if infos[i][j] > max:
-						max = infos[i][j]
+			for i in range(1, infos[0].__len__()):
+				for j in range(1, infos.__len__()):
+					data.append([i - 1, j - 1, infos[j][i]])
+					if infos[j][i] > max:
+						max = infos[j][i]
 
-			datas['x'] = infos[0][1:]
-			datas['y'] = names
+
+			datas['x'] = names
+			datas['y'] = infos[0][1:]
+
 			datas['data'] = data
 			datas['max'] = max
 		else:
@@ -252,7 +254,7 @@ class repoDB_Options():
 
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
-	# datas = repoDB.get_FileContributorMatrix("FileContributorMatrix5")
+	datas = repoDB.get_FileContributorMatrix("FileContributorMatrix1")
 	# datas = repoDB.get_repo_base_information("a")
-	datas = repoDB.get_repo_status()
+	# datas = repoDB.get_repo_status()
 	print(datas)

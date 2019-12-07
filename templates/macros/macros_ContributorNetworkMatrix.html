@@ -1,17 +1,24 @@
 {% macro contributorNetworkMatrix(contributor_network_matrix) %}
-    <div id="main5" style="width: 800px;height:500px;margin: 0 auto;"></div>
+    <div style="margin: 15px">
+        <h5>1.贡献者协作矩阵</h5>
+        <div id="main5" style="width: 800px;height:500px;margin: 0 auto;"></div>
+        <h5>2.贡献者协作关系图</h5>
+        <div id="main51" style="width: 800px;height:500px;margin: 0 auto;"></div>
+    </div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart5 = echarts.init(document.getElementById('main5'));
+        var myChart51 = echarts.init(document.getElementById('main51'));
+
         // 指定图表的配置项和数据(注意要用tojson)
         var hours = {{ contributor_network_matrix.x | tojson }};
         var days = {{ contributor_network_matrix.y | tojson }};
         var data = {{ contributor_network_matrix.data | tojson}};
         var max = {{ contributor_network_matrix.max }}
 
-        data = data.map(function (item) {
-            return [item[1], item[0], item[2] || '-'];
-        });
+            data = data.map(function (item) {
+                return [item[1], item[0], item[2] || '-'];
+            });
 
         var option5 = {
             tooltip: {
@@ -62,8 +69,304 @@
             }]
         };
 
+        var option51 = {
+            tooltip: {
+                formatter: function (x) {
+                    if (typeof (x.data.creditPts) == "undefined") {
+                        return x.data.relation;
+                    } else {
+                        var br = '<br/>';
+                        var a = '信用分数 ' + x.data.creditPts + br;
+                        var b = ' 财务分数 ' + x.data.financialPts + br;
+                        var c = ' 校园表现 ' + x.data.schoolPts + br;
+                        var d = ' 信用变化 ';
+                        if (x.data.creditChange == -3) {
+                            d += '最近信用状况急剧恶化';
+                        } else if (x.data.creditChange == -2) {
+                            d += '最近信用状况越来越不好';
+                        } else if (x.data.creditChange == -1) {
+                            d += '最近信用状况有点下降的倾向';
+                        } else if (x.data.creditChange == 0) {
+                            d += '最近信用状况处于平稳状况';
+                        } else if (x.data.creditChange == 1) {
+                            d += '最近信用状况有提高趋势';
+                        } else {
+                            d += '最近该用户的信用状况非常好';
+                        }
+                        return a + b + c + d;
+                    }
+                }
+            },
+            series: [
+                {
+                    type: 'graph',
+                    layout: 'force',
+                    symbolSize: 60,//一般大小
+                    roam: false, //是否开启鼠标缩放和平移漫游。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+                    focusNodeAdjacency: true,
+                    // symbol: 'pin',
+                    edgeSymbol: ['circle', 'none'],
+                    edgeSymbolSize: [4, 10],
+                    edgeLabel: {
+                        // 留着以后可以改这里的属性
+                        normal: {
+                            textStyle: {
+                                fontSize: 20
+                            }
+                        }
+                    },
+                    force: {
+                        repulsion: 2500,
+                        edgeLength: [10, 50]
+                    },
+                    draggable: true,
+                    itemStyle: {
+                        normal: {
+                            color: '#409EFF',
+                        }
+                    },
+                    lineStyle: {
+                        normal: {
+                            width: 3,
+                            type: 'dotted',
+                            // color: '#b04ade'
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: '#409EFF' // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: 'blue' // 100% 处的颜色
+                                }],
+                                globalCoord: false // 缺省为 false
+                            }
+                        }
+                    },
+                    edgeLabel: {
+                        normal: {
+                            show: true,
+                            formatter: function (x) {
+                                //同学，工作伙伴啥的
+                                return x.data.name;
+                            }
+                        }
+                    },
+                    label: {
+                        normal: {
+                            show: true,
+                            textStyle: {}
+                        }
+                    },
+                    data: [{
+                        name: '南小紫',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        symbolSize: 100,
+                        itemStyle: {
+                            normal: {
+                                // color : '#409EFF'
+                                color: {
+                                    type: 'linear',
+                                    x: 0,
+                                    y: 0,
+                                    x2: 0,
+                                    y2: 1,
+                                    colorStops: [{
+                                        offset: 0, color: '#7853de' // 0% 处的颜色
+                                    }, {
+                                        offset: 1, color: '#409EFF' // 100% 处的颜色
+                                    }],
+                                    globalCoord: false, // 缺省为 false
+                                }
+                            }
+                        },
+                    }, {
+                        name: '张秀英',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: 1,
+                        itemStyle: {
+                            normal: {
+                                color: '#5db2ff',
+                            }
+                        },
+                    }, {
+                        name: '王桐',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: 2,
+                        itemStyle: {
+                            normal: {
+                                color: '#409EFF',
+                            }
+                        },
+                    }, {
+                        name: '罗子俊',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: 1,
+                        itemStyle: {
+                            normal: {
+                                color: '#5db2ff',
+                            }
+                        },
+                    }, {
+                        name: '付贺然',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: -3,
+                        itemStyle: {
+                            normal: {
+                                color: '#fa6862',
+                            }
+                        },
+                    }, {
+                        name: '陈文博',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: -3,
+                        itemStyle: {
+                            normal: {
+                                color: '#fa6862',
+                            }
+                        },
+                    }, {
+                        name: '吴欣怡',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: 2,
+                        itemStyle: {
+                            normal: {
+                                color: '#409EFF',
+                            }
+                        },
+                    }, {
+                        name: '刘浩',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: -2,
+                        itemStyle: {
+                            normal: {
+                                color: '#afb8c2',
+                            }
+                        },
+                    }, {
+                        name: '张一帆',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: 0,
+                        normal: {
+                            color: '#244767',
+                        }
+                    }, {
+                        name: '李艺璇',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: -1,
+                        itemStyle: {
+                            normal: {
+                                color: '#7ac2ff',
+                            }
+                        },
+                    }, {
+                        name: '王刚',
+                        creditPts: 97,
+                        financialPts: 85,
+                        schoolPts: 67,
+                        creditChange: -1,
+                        itemStyle: {
+                            normal: {
+                                color: '#7ac2ff',
+                            }
+                        },
+                    }],
+                    // links: [],
+                    links: [{
+                        source: '南小紫',
+                        target: '张秀英',
+                        name: '同学',
+                        relation: '您最近的关系没什么变化'
+                    }, {
+                        source: '南小紫',
+                        target: '王桐',
+                        name: '同学',
+                        relation: '您最近的关系超级好',
+                        lineStyle: {
+                            normal: {
+                                type: 'solid',
+                            }
+                        },
+                    }, {
+                        source: '南小紫',
+                        target: '罗子俊',
+                        name: '校友',
+                        relation: '您最近的关系没什么变化'
+                    }, {
+                        source: '南小紫',
+                        target: '付贺然',
+                        name: '校友',
+                        lineStyle: {
+                            normal: {
+                                type: 'dashed',
+                            }
+                        },
+                        relation: '您最近的关系减淡了'
+                    }, {
+                        source: '南小紫',
+                        target: '陈文博',
+                        name: '同学',
+                        relation: '您最近的关系没什么变化'
+                    }, {
+                        source: '南小紫',
+                        target: '刘浩',
+                        name: '同学',
+                        relation: '您最近的关系没什么变化'
+                    }, {
+                        source: '南小紫',
+                        target: '王刚',
+                        name: '工作伙伴',
+                        relation: '您最近的关系没什么变化'
+                    }, {
+                        source: '南小紫',
+                        target: '李艺璇',
+                        name: '工作伙伴',
+                        relation: '您最近的关系没什么变化'
+                    }, {
+                        source: '南小紫',
+                        target: '张一帆',
+                        name: '工作伙伴',
+                        relation: '您最近的关系没什么变化'
+                    }, {
+                        source: '南小紫',
+                        target: '吴欣怡',
+                        name: '同学',
+                        relation: '您最近的关系超级好',
+                        lineStyle: {
+                            normal: {
+                                type: 'solid',
+                            }
+                        },
+                    }],
+                }
+            ]
+        }
+
         // 使用刚指定的配置项和数据显示图表。
         myChart5.setOption(option5);
+        myChart51.setOption(option51);
     </script>
 {% endmacro %}
 

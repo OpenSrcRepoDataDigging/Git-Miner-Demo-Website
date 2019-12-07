@@ -1,5 +1,13 @@
-{% macro fileContributorMatrix(file_contributor_matrix) %}
-    <div id="main3" style="width: 800px;height:500px;margin: 0 auto;"></div>
+{% macro fileContributorMatrix(file_contributor_matrix, repo_name, height, width) %}
+    <div style="margin: 15px">
+        <h5>1.文件贡献矩阵 </h5>
+        <a href="{{ url_for('show_file_contributor_matrix', repo_name = repo_name) }}">大图</a>
+        {% if height == 0 %}
+            <div id="main3" style="width: 800px;height:800px;margin: 0 auto;"></div>
+        {% else %}
+            <div id="main3" style="width: {{ width }}px;height:{{ height }}px;margin: 0 auto;"></div>
+        {% endif %}
+    </div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart3 = echarts.init(document.getElementById('main3'));
@@ -7,7 +15,7 @@
         var hours = {{ file_contributor_matrix.x | tojson }};
         var days = {{ file_contributor_matrix.y | tojson }};
         var data = {{ file_contributor_matrix.data | tojson}};
-        var max = {{ file_contributor_matrix.max }}
+        var max = {{ file_contributor_matrix.max }};
 
         data = data.map(function (item) {
             return [item[1], item[0], item[2] || '-'];
@@ -20,7 +28,8 @@
             animation: false,
             grid: {
                 height: '50%',
-                y: '10%'
+                y: '5%',
+                x: '30%'
             },
             xAxis: {
                 type: 'category',

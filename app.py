@@ -254,6 +254,18 @@ def choose_repository(cid):
 	sql.selectCourse(sid=username, cid=cid)
 	return redirect(url_for('mooc'))
 
+@app.route('/repositories/how_file_contributor_matrix/<repo_name>')
+def show_file_contributor_matrix(repo_name):
+	index = repoDB.get_repo_index(repo_name)
+	# 文件贡献图
+	file_contributor_matrix = repoDB.get_FileContributorMatrix('FileContributorMatrix' + index)
+	print('file_contributor_matrix', file_contributor_matrix)
+	return render_template(
+		"repositories_graph.html",
+		file_contributor_matrix=file_contributor_matrix,
+		repo_name = repo_name
+	)
+
 
 # 查看项目具体信息
 @app.route('/repositories/show_repositories/<repo_name>')
@@ -277,6 +289,7 @@ def show_repositories(repo_name):
 	return render_template(
 		"repositories_content.html",
 		username=username,
+		repo_name = repo_name,
 		commit_times_list_by_day=commit_times_list_by_day,
 		contributor_network_matrix=contributor_network_matrix,
 		file_contributor_matrix=file_contributor_matrix,
