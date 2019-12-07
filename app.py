@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(12)
 git_miner = GitMiner()
 repoDB = repoDB_Options()
-executor = ThreadPoolExecutor(2)
+executor = ThreadPoolExecutor(5)
 
 
 @app.before_request

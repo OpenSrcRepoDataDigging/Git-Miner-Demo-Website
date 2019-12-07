@@ -1,6 +1,6 @@
 import os
 import jpype
-
+from FrechetDistance import FrechetDistance
 
 class GitMiner():
 	def __init__(self, jar_path = 'GitMiner-1.0-SNAPSHOT.jar') -> None:
@@ -9,6 +9,11 @@ class GitMiner():
 		self.jar_path = os.path.join(os.path.abspath('.'), jar_path)
 		# 开启JVM，且指定jar包, 或者.class文件位置
 		jpype.startJVM(jpype.getDefaultJVMPath(), "-ea", "-Djava.class.path=%s" % self.jar_path)
+		self.frechet = FrechetDistance()
+
+	def get_repo_name_from_url(self,url):
+		repo_name = ""
+		return repo_name
 
 	def git_clone(self, url):
 		# 引入java程序中的类.路径应该是项目中的package包路径.类名
@@ -18,6 +23,8 @@ class GitMiner():
 		# 执行类中的函数了
 		res = mdg.generateNew(url)
 		print(res)
+		repo_name = self.get_repo_name_from_url(url)
+		self.frechet.get_frechet_distance(repo_name)
 		return res
 
 

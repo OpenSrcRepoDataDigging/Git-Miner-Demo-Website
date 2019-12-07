@@ -61,6 +61,8 @@ class repoDB_Options():
         ]
 		res['top_ten_frechet'] = source
 
+
+
 		return res
 
 	# 获得带有列名的数据库信息
@@ -251,5 +253,6 @@ class repoDB_Options():
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
 	# datas = repoDB.get_FileContributorMatrix("FileContributorMatrix5")
-	datas = repoDB.get_repo_base_information("a")
+	# datas = repoDB.get_repo_base_information("a")
+	datas = repoDB.get_repo_status()
 	print(datas)

@@ -35,9 +35,16 @@
                                 {#                                <td>{{ repo.REPOLOCALPATH }}</td>#}
                                 {#                                <td>{{ repo.CLONETIME }}</td>#}
                                 <td>
-                                    <button type="button" class="btn  btn-success">
-                                        成功 <span class="badge badge-light">1</span>
-                                    </button>
+                                    {% if repo.CLONESTATUS == 0 %}
+                                        <button type="button" class="btn  btn-success">
+                                            成功 <span class="badge badge-light">1</span>
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn  btn-primary">
+                                            处理中 <span class="badge badge-light">1</span>
+                                        </button>
+                                    {% endif %}
+
                                 </td>
                                 <td><a href="{{ url_for('show_repositories',repo_name =repo.REPONAME) }}">详情</a></td>
                             </tr>
