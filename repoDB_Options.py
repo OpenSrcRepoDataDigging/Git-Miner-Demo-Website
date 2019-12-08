@@ -61,7 +61,7 @@ class repoDB_Options():
 		]
 		res['top_ten_frechet'] = source
 
-		return res
+		#return res
 
 		index = self.get_repo_index(repo_name)
 		#实现前十的commit对应关系
@@ -77,20 +77,19 @@ class repoDB_Options():
 		for i in infor:
 			for j in i:
 				topcommits.append(j)
-		for i in range(10):
+		for i in range(min(10, topname.__len__())):
 			tmprow = []
-			tmprow.append(topfilename[i])
+			tmprow.append(topname[i])
 			tmprow.append(topcommits[i])
 			topten.append(tmprow)
 		res['top_ten_commits'] = topten
 		#计数
 		commit_sum = 0
-		for i in range(topcommits):
-			commit_sum += topcommits[i]
+		for i in range(topcommits.__len__()):
+			commit_sum += int(topcommits[i])
 		res['commits'] = commit_sum
 		res['contributors'] = topname.__len__()
 		#TODO :还要加上最早时间
-		
 		# TODO：现在从0开始构建，没有这些文件，Run不起来呀
 		source = []
 		header = ['frechet', 'commits', 'contributor']
@@ -122,7 +121,7 @@ class repoDB_Options():
 				insertrow.append(allcommit[i])
 				insertrow.append(allname[i])
 				source.append(insertrow)
-		print(source)
+		#print(source)
 		res['top_ten_frechet'] = source
 		return res
 
@@ -223,6 +222,8 @@ class repoDB_Options():
 
 		if self.is_table_exist(table_name):
 			res['commits_list'] = self.get_col_and_datas(table_name)
+			#change table name
+			table_name = table_name.replace("CommitTimesListByDay", "ClassifiedCommitList")
 			res['commits_classify'] = self.get_ClassifiedCommitList(table_name)
 		else:
 			print("表", table_name, "不存在")
