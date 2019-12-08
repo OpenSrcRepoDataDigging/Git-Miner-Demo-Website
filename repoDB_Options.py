@@ -63,6 +63,34 @@ class repoDB_Options():
 
 		return res
 
+		int index = self.get_repo_index(repo_name)
+		#实现前十的commit对应关系
+		db_name = "LOCSumLastCommit" + str(index)
+		topten = [['contributor', 'commits']]
+		topname = []
+		topcommits = []
+		infor = self.execute("select name from {} order by commits".format(db_name)) 
+		for i in infor:
+			for j in i:
+				topname.append(j)
+		infor = self.execute("select commits from {} order by commits".format(db_name)) 
+		for i in infor:
+			for j in i:
+				topcommits.append(j)
+		for i in range(10):
+			tmprow = []
+			tmprow.append(topfilename[i])
+			tmprow.append(topcommits[i])
+			topten.append(tmprow)
+		res['top_ten_commits'] = topten
+		#计数
+		commit_sum = 0
+		for i in range(topcommits):
+			commit_sum += topcommits[i]
+		res['commits'] = commit_sum
+		res['contributors'] = topname.__len__()
+		#TODO :还要加上最早时间
+		
 		# TODO：现在从0开始构建，没有这些文件，Run不起来呀
 		source = []
 		header = ['frechet', 'commits', 'contributor']
