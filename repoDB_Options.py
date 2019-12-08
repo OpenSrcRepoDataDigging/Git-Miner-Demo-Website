@@ -3,7 +3,7 @@ from pprint import pprint
 import pymysql
 import sqlite3
 import getpass
-
+import numpy as np
 
 class repoDB_Options():
 
@@ -61,7 +61,7 @@ class repoDB_Options():
 		]
 		res['top_ten_frechet'] = source
 
-		#return res
+		return res
 
 		index = self.get_repo_index(repo_name)
 		#实现前十的commit对应关系
@@ -224,6 +224,62 @@ class repoDB_Options():
 			barcodes['top'].append(barcode)
 
 		res['barcodes'] = barcodes
+
+		#计算BarCode
+		if self.is_table_exist(table_name):
+			x_axis = []
+			y_axis = ['']
+			data_axis = []
+			date_raw = self.execute("select Date from {}".format(table_name))
+			for i in date_raw:
+				for j in i:
+					x_axis.append(j)
+			
+			infor = self.get_col_and_datas(table_name)
+			for i in range(1, infor.__len__()):
+				newdata = []
+				newdata.append(0)#y_axis
+				newdata.append(i - 1)#x_axis
+				newdata.append(infor[i][1])
+				data_axis.append(newdata)
+			barcode = dict()
+			barcode['x'] = x_axis
+			barcode['y'] = y_axis
+			barcode['data'] = data_axis
+			barcode['max'] = 6
+			barcodes['all'] = barcode
+			#上面计算的是整个项目的barcode，接下来计算commit前五的人
+			#先统计个数：
+			commits_sum = []
+			name_all = []
+			for i in range(2, infor[0].__len__()):
+				name = infor[0][i]
+				name_all.append(name)
+				data_row = self.execute("select sum({}) from {}".format(name, table_name))
+				for tmpi in data_row:
+					for tmpj in tmpi:
+						commits_sum.append(int(tmpj))
+			sequence = np.argsort(commits_sum)
+			barcodes['top'] = []
+			for i in range(min(5, len(sequence)):
+				index  = sequence[len(sequence) - 1 - i]
+				name = name_all[index]
+				print(name)
+				commit = commits_sum[index]
+				tmp_data_axis = []
+				for row in range(1, infor.__len__()):
+					newdata = []
+					newdata.append(0)
+					newdata.append(row - 1)
+					newdata.append(infor[row][index+2])
+					tmp_data_axis.append(newdata)
+				tmpbarcode = dict()
+				tmpbarcode['x'] = x_axis
+				tmpbarcode['y'] = y_axis
+				tmpbarcode['data'] = tmp_data_axis
+				tmpbarcode['max'] = 6
+				barcodes['top'].append(tmpbarcode)
+			res['barcodes'] = barcodes
 
 		if self.is_table_exist(table_name):
 			res['commits_list'] = self.get_col_and_datas(table_name)
@@ -492,7 +548,7 @@ class repoDB_Options():
 			all_info = self.get_col_and_datas(table_name)
 			WIDTH_DIV = 1
 			for i in range(1, all_info.__len__()):
-				for j in range(1, all_info.__len__()):
+				for j in range(1, i):
 					relation = int(all_info[i][j])
 					newlink = {}
 					newlink['source'] = members[i - 1]
