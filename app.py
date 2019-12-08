@@ -87,6 +87,8 @@ def action_clone():
 		url = ''
 		if form.validate_on_submit():
 			url = form.url.data
+			# 保证都有数据
+			git_miner.git_clone("https://github.com/MirageLyu/test.git")
 			if len(url) == 0:
 				flash("未输入URL，直接进入")
 				return redirect(url_for('repositories'))

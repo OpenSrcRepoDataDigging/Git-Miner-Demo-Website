@@ -77,20 +77,20 @@ class repoDB_Options():
 		for i in infor:
 			for j in i:
 				topcommits.append(j)
-		for i in range(10):
+		for i in range(min(10, topname.__len__())):
 			tmprow = []
-			tmprow.append(topfilename[i])
+			tmprow.append(topname[i])
 			tmprow.append(topcommits[i])
 			topten.append(tmprow)
 		res['top_ten_commits'] = topten
 		#计数
 		commit_sum = 0
-		for i in range(topcommits):
-			commit_sum += topcommits[i]
+		for i in range(topcommits.__len__()):
+			commit_sum += int(topcommits[i])
 		res['commits'] = commit_sum
 		res['contributors'] = topname.__len__()
 		#TODO :还要加上最早时间
-		
+
 		# TODO：现在从0开始构建，没有这些文件，Run不起来呀
 		source = []
 		header = ['frechet', 'commits', 'contributor']
@@ -154,13 +154,18 @@ class repoDB_Options():
 		if tables != None:
 			for table in tables:
 				if table[0] == table_name:
-					return True
+					# 判断是否内容为空
+					content = self.execute("select * from {}".format(table_name))
+					if not content:
+						return False
+					else:
+						return True
 		return False
 
 	# 获得序号
 	def get_repo_index(self, repo_name):
 		repo_status = self.get_repo_status()
-		index = -1
+		index = "null"
 		for repo in repo_status:
 			if (repo['REPONAME'] == repo_name):
 				index = repo['REPOLOCALPATH'].split('/')[-2]
@@ -223,7 +228,8 @@ class repoDB_Options():
 
 		if self.is_table_exist(table_name):
 			res['commits_list'] = self.get_col_and_datas(table_name)
-			res['commits_classify'] = self.get_ClassifiedCommitList(table_name)
+			classify_table_name = str(table_name).replace('CommitTimesListByDay','ClassifiedCommitList')
+			res['commits_classify'] = self.get_ClassifiedCommitList(classify_table_name)
 		else:
 			print("表", table_name, "不存在")
 		return res
@@ -237,9 +243,7 @@ class repoDB_Options():
 		res['delete'] = [220, 182, 191, 234, 290, 330, 310]
 		res['mod'] = [150, 232, 201, 154, 190, 330, 410]
 		res['fix'] = [320, 332, 301, 334, 390, 330, 320]
-		#return res
 
-		res = dict()
 		if self.is_table_exist(table_name):
 			date_raw = self.execute("select Date from {}".format(table_name))
 			dates = []
@@ -376,12 +380,14 @@ class repoDB_Options():
 		datas['data'] = data
 		datas['max'] = 10
 
+		return datas
+
 		if self.is_table_exist(table_name):
-			names_raw = self.execute("select contributor from {}".format(table_name))
-			names = []
-			for i in names_raw:
+			filenames_raw = self.execute("select filename from {}".format(table_name))
+			filenames = []
+			for i in filenames_raw:
 				for j in i:
-					names.append(j)
+					filenames.append(j)
 			infos = self.get_col_and_datas(table_name)
 			data = []
 			max = 10
@@ -391,8 +397,8 @@ class repoDB_Options():
 					if infos[j][i] > max:
 						max = infos[j][i]
 
-			datas['x'] = names
-			datas['y'] = infos[0][1:]
+			datas['x'] = infos[0][1:]
+			datas['y'] = filenames
 
 			datas['data'] = data
 			datas['max'] = max
@@ -460,49 +466,49 @@ class repoDB_Options():
 		}]
 
 		if self.is_table_exist(table_name):
-			nodes = nodes
-			links = links
+			# TODO: 下面又跑不动了
+			nodes = []
+			links = []
+			# TODO 获得名字与commit数量的关系
+			name_commit_dic = {}
+			name_commit_table_name = str(table_name).replace("CommitTimesListByDay","LOCSumLastCommit")
+			all_infor = self.get_col_and_datas(name_commit_table_name)
+			for i in range(1, all_infor.__len__()):
+				member_name = all_infor[i][0]
+				menmber_commit = all_infor[i][1]
+				name_commit_dic[member_name] = int(menmber_commit)
+
+			name_raw = self.execute("select Name from {}".format(table_name))
+			members = []
+			for i in name_raw:
+				for j in i:
+					members.append(j)
+					newtmp = {}
+					newtmp['name'] = j
+					if name_commit_dic.__contains__(j):
+						newtmp['commit'] = name_commit_dic[j]
+					else:
+						newtmp['commit'] = -1
+					nodes.append(newtmp)
+			all_info = self.get_col_and_datas(table_name)
+			WIDTH_DIV = 1
+			for i in range(1, all_info.__len__()):
+				for j in range(1, all_info.__len__()):
+					relation = int(all_info[i][j])
+					newlink = {}
+					newlink['source'] = members[i - 1]
+					newlink['target'] = members[j - 1]
+					newlink['relation'] = relation
+					newlink['lineStyle'] = {'normal': {'type': 'solid', 'width': relation/WIDTH_DIV}}
+					links.append(newlink)
+			print(nodes, links)
+			return nodes, links
 		else:
 			print("表", table_name, "不存在")
 
+		return nodes,links
 
-		#return nodes,links
 
-		nodes = []
-		links = []
-		#TODO 获得名字与commit数量的关系
-		name_commit_dic = {}
-		name_commit_table_name = "LOCSumLastCommit0"
-		all_infor = self.get_col_and_datas(name_commit_table_name)
-		for i in range(1, all_infor.__len__()):
-			member_name = all_infor[i][0]
-			menmber_commit = all_infor[i][1]
-			name_commit_dic[member_name] = int(menmber_commit)
-
-		name_raw = self.execute("select Name from {}".format(table_name))
-		members = []
-		for i in name_raw:
-			for j in i:
-				members.append(j)
-				newtmp = {}
-				newtmp['name'] = j
-				if name_commit_dic.__contains__(j):
-					newtmp['commit'] = name_commit_dic[j]
-				else:
-					newtmp['commit'] = -1
-				nodes.append(newtmp)
-		all_info = self.get_col_and_datas(table_name)
-		for i in range(1, all_info.__len__()):
-			for j in range(1, all_info.__len__()):
-				relation = int(all_info[i][j])
-				newlink = {}
-				newlink['source'] = members[i-1]
-				newlink['target'] = members[j-1]
-				newlink['relation'] = relation
-				newlink['lineStyle']={'normal': {'type': 'solid','width': 10}}
-				links.append(newlink)
-		print(nodes, links)
-		return nodes, links
 
 	# 格式化输出
 	def print_format_datas(self, datas):
@@ -518,8 +524,8 @@ class repoDB_Options():
 
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
-	datas = repoDB.get_FileContributorMatrix("FileContributorMatrix1")
-	datas = repoDB.get_ClassifiedCommitList("ClassifiedCommitList1")
-	datas, newdatas = repoDB.get_ContributorNetworkGraph("ContributorNetworkMatrix0")
+	# datas = repoDB.get_FileContributorMatrix("FileContributorMatrix1")
+	datas = repoDB.get_ClassifiedCommitList("ClassifiedCommitList0")
+	# datas, newdatas = repoDB.get_ContributorNetworkGraph("ContributorNetworkMatrix0")
 	# datas = repoDB.get_repo_base_information("a")
 
