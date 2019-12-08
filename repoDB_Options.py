@@ -63,7 +63,7 @@ class repoDB_Options():
 
 		return res
 
-		int index = self.get_repo_index(repo_name)
+		index = self.get_repo_index(repo_name)
 		#实现前十的commit对应关系
 		db_name = "LOCSumLastCommit" + str(index)
 		topten = [['contributor', 'commits']]
