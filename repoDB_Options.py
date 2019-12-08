@@ -261,7 +261,7 @@ class repoDB_Options():
 						commits_sum.append(int(tmpj))
 			sequence = np.argsort(commits_sum)
 			barcodes['top'] = []
-			for i in range(min(5, len(sequence)):
+			for i in range(min(5, sequence.__len__())):
 				index  = sequence[len(sequence) - 1 - i]
 				name = name_all[index]
 				print(name)
