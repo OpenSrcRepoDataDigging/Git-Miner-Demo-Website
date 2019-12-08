@@ -201,6 +201,7 @@ class repoDB_Options():
 		return res
 
 	# TODO: 从数据库读取格式化数据
+	# Finish 2019/12/8，由于不明确所以这里实现的只是总的commit四个类别随时间的图表
 	def get_ClassifiedCommitList(self, table_name):
 		res = dict()
 		res['date'] = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
@@ -208,7 +209,46 @@ class repoDB_Options():
 		res['delete'] = [220, 182, 191, 234, 290, 330, 310]
 		res['mod'] = [150, 232, 201, 154, 190, 330, 410]
 		res['fix'] = [320, 332, 301, 334, 390, 330, 320]
+		#return res
+
+		res = dict()
+		if self.is_table_exist(table_name):
+			date_raw = self.execute("select Date from {}".format(table_name))
+			dates = []
+			for i in date_raw:
+				for j in i:
+					dates.append(j)
+			res['date'] = dates
+			classifiedcommit = []
+			'''
+			all_col = self.execute("select LeoDarcy from {}".format(table_name))
+			for i in date_raw:
+				for j in i:
+					classifiedcommit.append(j)'''
+			all_col = self.get_col_and_datas(table_name)
+			for i in range(1, len(dates)):
+				classifiedcommit.append(all_col[i][1])
+			adddata = []
+			deldata = []
+			moddata = []
+			fixdata = []
+			for line in classifiedcommit:
+				parts = line.split('-')
+				adddata.append(int(parts[0]))
+				deldata.append(int(parts[1]))
+				moddata.append(int(parts[2]))
+				fixdata.append(int(parts[3]))
+			res['date'] = dates
+			res['add'] = adddata
+			res['delete'] = deldata
+			res['mod'] = moddata
+			res['fix'] = fixdata
+			
+		else:
+			print("表", table_name, "不存在")
+		#print(res)
 		return res
+
 
 	def get_ContributorNetworkMatrix(self, table_name):
 		# 数据原型
@@ -334,6 +374,7 @@ class repoDB_Options():
 		return datas
 
 	# TODO: 从数据库获取数据自定义节点和边
+	#Finish dot 建议传入的是repo_name,因为需要打开两个表
 	def get_ContributorNetworkGraph(self, table_name):
 		# node，表示关系图的节点，除了name，其他可以自定义成任何东西，比如commit，LOC之类的
 		nodes = [{
@@ -397,7 +438,43 @@ class repoDB_Options():
 			print("表", table_name, "不存在")
 
 
-		return nodes,links
+		#return nodes,links
+
+		nodes = []
+		links = []
+		#TODO 获得名字与commit数量的关系
+		name_commit_dic = {}
+		name_commit_table_name = "LOCSumLastCommit0"
+		all_infor = self.get_col_and_datas(name_commit_table_name)
+		for i in range(1, all_infor.__len__()):
+			member_name = all_infor[i][0]
+			menmber_commit = all_infor[i][1]
+			name_commit_dic[member_name] = int(menmber_commit)
+
+		name_raw = self.execute("select Name from {}".format(table_name))
+		members = []
+		for i in name_raw:
+			for j in i:
+				members.append(j)
+				newtmp = {}
+				newtmp['name'] = j
+				if name_commit_dic.__contains__(j):
+					newtmp['commit'] = name_commit_dic[j]
+				else:
+					newtmp['commit'] = -1
+				nodes.append(newtmp)
+		all_info = self.get_col_and_datas(table_name)
+		for i in range(1, all_info.__len__()):
+			for j in range(1, all_info.__len__()):
+				relation = int(all_info[i][j])
+				newlink = {}
+				newlink['source'] = members[i-1]
+				newlink['target'] = members[j-1]
+				newlink['relation'] = relation
+				newlink['lineStyle']={'normal': {'type': 'solid','width': 10}}
+				links.append(newlink)
+		print(nodes, links)
+		return nodes, links
 
 	# 格式化输出
 	def print_format_datas(self, datas):
@@ -414,5 +491,7 @@ class repoDB_Options():
 if __name__ == '__main__':
 	repoDB = repoDB_Options()
 	datas = repoDB.get_FileContributorMatrix("FileContributorMatrix1")
+	datas = repoDB.get_ClassifiedCommitList("ClassifiedCommitList1")
+	datas, newdatas = repoDB.get_ContributorNetworkGraph("ContributorNetworkMatrix0")
 	# datas = repoDB.get_repo_base_information("a")
 
