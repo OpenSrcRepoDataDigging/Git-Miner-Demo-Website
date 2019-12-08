@@ -255,13 +255,13 @@ class repoDB_Options():
 			for i in range(2, infor[0].__len__()):
 				name = infor[0][i]
 				name_all.append(name)
-				data_row = self.execute("select sum(\"{}\") from {}".format(name, table_name))
+				data_row = self.execute("select sum({}) from {}".format(name, table_name))
 				for tmpi in data_row:
 					for tmpj in tmpi:
 						commits_sum.append(int(tmpj))
 			sequence = np.argsort(commits_sum)
 			barcodes['top'] = []
-			for i in range(min(5, len(sequence))):
+			for i in range(min(5, sequence.__len__())):
 				index  = sequence[len(sequence) - 1 - i]
 				name = name_all[index]
 				print(name)
