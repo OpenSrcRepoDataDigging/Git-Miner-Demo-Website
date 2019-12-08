@@ -1,8 +1,11 @@
 import os
+from concurrent.futures.thread import ThreadPoolExecutor
+
 import jpype
 from FrechetDistance import FrechetDistance
 import repoDB_Options
 import getpass
+executor = ThreadPoolExecutor(5)
 
 
 class GitMiner():
@@ -32,11 +35,10 @@ class GitMiner():
 		mdg = MainDataGenerator()
 		# 执行类中的函数了
 		res = mdg.generateNew(url)
-		print(res)
-		return res
-		# TODO：现在从0开始构建，没有这些文件，Run不起来呀
-		path_prefix = self.get_path_prefix_from_url(url)
-		self.frechet.get_frechet_distance(path_prefix)
+		print("git clone res = ", res)
+		# path_prefix = self.get_path_prefix_from_url(url)
+		# self.frechet.get_frechet_distance(path_prefix)
+
 		return res
 
 

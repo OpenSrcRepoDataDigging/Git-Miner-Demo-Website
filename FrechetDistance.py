@@ -49,13 +49,13 @@ class FrechetDistance(object):
 		if ca[i,j] > -1:
 			return ca[i,j]
 		elif i == 0 and j == 0:
-			ca[i,j] = euc_dist(P[0],Q[0])
+			ca[i,j] = self.euc_dist(P[0], Q[0])
 		elif i > 0 and j == 0:
-			ca[i,j] = max(_c(ca,i-1,0,P,Q),euc_dist(P[i],Q[0]))
+			ca[i,j] = max(self._c(ca,i-1,0,P,Q),self.euc_dist(P[i],Q[0]))
 		elif i == 0 and j > 0:
-			ca[i,j] = max(_c(ca,0,j-1,P,Q),euc_dist(P[0],Q[j]))
+			ca[i,j] = max(self._c(ca,0,j-1,P,Q),self.euc_dist(P[0],Q[j]))
 		elif i > 0 and j > 0:
-			ca[i,j] = max(min(_c(ca,i-1,j,P,Q),_c(ca,i-1,j-1,P,Q),_c(ca,i,j-1,P,Q)),euc_dist(P[i],Q[j]))
+			ca[i,j] = max(min(self._c(ca,i-1,j,P,Q),self._c(ca,i-1,j-1,P,Q),self._c(ca,i,j-1,P,Q)),self.euc_dist(P[i],Q[j]))
 		else:
 			ca[i,j] = float("inf")
 		return ca[i,j]
@@ -166,7 +166,7 @@ class FrechetDistance(object):
 			print("--------------没有有归一化：")
 
 		# 读取数据
-		dataSet, dataHeader = loadCSV(filename,isNormalize)
+		dataSet, dataHeader = self.loadCSV(filename,isNormalize)
 		# 开发者数目（排除All）
 		author_cnts = dataHeader.__len__() - 1
 		print("一共有" + str(author_cnts) + "个Commit次数超过100的开发者")
@@ -190,7 +190,7 @@ class FrechetDistance(object):
 				Q = []
 				for k in range(dataSet.shape[0]):
 					Q.append((k, dataSet[k, j]))
-				res = frechetDist(P, Q)
+				res = self.frechetDist(P, Q)
 				'''这里做了倒数处理'''
 				if isDivide:
 					if (res == 0):
@@ -243,25 +243,25 @@ class FrechetDistance(object):
 		#filename = 'files/alluxio.csv'
 		filename = 'files/commitday.csv'
 		tmpfilename = 'files/sum_commitday.csv'
-		SumCSV(filename, tmpfilename)
+		self.SumCSV(filename, tmpfilename)
 		filename = tmpfilename
 		outname = 'outcomes/alluxio/alluxio'
-		getDistanceToAll(filename,outname+'OvR_Normal_Divide.csv',True,True)
-		getDistanceToAll(filename,outname+'OvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
-		getDistanceMatrix(filename,outname+'RvR_Normal_Divide.csv',True,True)
-		getDistanceMatrix(filename,outname+'RvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
+		self.getDistanceToAll(filename,outname+'OvR_Normal_Divide.csv',True,True)
+		self.getDistanceToAll(filename,outname+'OvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
+		self.getDistanceMatrix(filename,outname+'RvR_Normal_Divide.csv',True,True)
+		self.getDistanceMatrix(filename,outname+'RvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
 
 		'''按照天为单位'''
 		filename = 'files/alluxio_original.csv'
 		filename = 'files/commitweek.csv'
 		tmpfilename = 'files/sum_commitweek.csv'
-		SumCSV(filename, tmpfilename)
+		self.SumCSV(filename, tmpfilename)
 		filename = tmpfilename
 		outname = 'outcomes/alluxio_original/alluxio_original'
-		getDistanceToAll(filename,outname+'OvR_Normal_Divide.csv',True,True)
-		getDistanceToAll(filename,outname+'OvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
-		getDistanceMatrix(filename,outname+'RvR_Normal_Divide.csv',True,True)
-		getDistanceMatrix(filename,outname+'RvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
+		self.getDistanceToAll(filename,outname+'OvR_Normal_Divide.csv',True,True)
+		self.getDistanceToAll(filename,outname+'OvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
+		self.getDistanceMatrix(filename,outname+'RvR_Normal_Divide.csv',True,True)
+		self.getDistanceMatrix(filename,outname+'RvR_Divide.csv',False,True) #不Normal是为了得到绝对距离（归一后相似度高 && 归一前值也高）
 
 		end = time.time()
 		print("运行时间：" + str(end - start) + "s")
