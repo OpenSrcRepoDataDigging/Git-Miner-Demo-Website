@@ -69,6 +69,7 @@
             }]
         };
 
+
         var option51 = {
             tooltip: {
                 formatter: function (x) {
@@ -101,7 +102,7 @@
                 {
                     type: 'graph',
                     layout: 'force',
-                    symbolSize: 60,//一般大小
+                    symbolSize: 20,//一般大小
                     roam: true, //是否开启鼠标缩放和平移漫游。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
                     focusNodeAdjacency: true,
                     // symbol: 'pin',
@@ -116,7 +117,7 @@
                         }
                     },
                     force: {
-                        repulsion: 2500,
+                        repulsion: 6000,
                         edgeLength: [10, 50]
                     },
                     draggable: true,
@@ -148,7 +149,7 @@
                     },
                     edgeLabel: {
                         normal: {
-                            show: true,
+                            show: false,
                             formatter: function (x) {
                                 //同学，工作伙伴啥的
                                 return x.data.name;
@@ -157,149 +158,16 @@
                     },
                     label: {
                         normal: {
-                            show: true,
+                            show: false,
                             textStyle: {}
                         }
                     },
-                    data: [{
-                        name: '南小紫',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                    }, {
-                        name: '张秀英',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: 1,
-                    }, {
-                        name: '王桐',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: 2,
-                    }, {
-                        name: '罗子俊',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: 1,
-                    }, {
-                        name: '付贺然',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: -3,
-                    }, {
-                        name: '陈文博',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: -3,
-                    }, {
-                        name: '吴欣怡',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: 2,
-                    }, {
-                        name: '刘浩',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: -2,
-                    }, {
-                        name: '张一帆',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: 0,
-                    }, {
-                        name: '李艺璇',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: -1,
-                    }, {
-                        name: '王刚',
-                        creditPts: 97,
-                        financialPts: 85,
-                        schoolPts: 67,
-                        creditChange: -1,
-                    }],
-                    data : {{ contributor_network_matrix.nodes | tojson }},
-                    // links: [],
-                    links: [{
-                        source: '南小紫',
-                        target: '张秀英',
-                        name: '同学',
-                        relation: '您最近的关系没什么变化'
-                    }, {
-                        source: '南小紫',
-                        target: '王桐',
-                        name: '同学',
-                        relation: '您最近的关系超级好',
-                        lineStyle: {
-                            normal: {
-                                type: 'solid',
-                            }
-                        },
-                    }, {
-                        source: '南小紫',
-                        target: '罗子俊',
-                        name: '校友',
-                        relation: '您最近的关系没什么变化'
-                    }, {
-                        source: '南小紫',
-                        target: '付贺然',
-                        name: '校友',
-                        lineStyle: {
-                            normal: {
-                                type: 'dashed',
-                            }
-                        },
-                        relation: '您最近的关系减淡了'
-                    }, {
-                        source: '南小紫',
-                        target: '陈文博',
-                        name: '同学',
-                        relation: '您最近的关系没什么变化'
-                    }, {
-                        source: '南小紫',
-                        target: '刘浩',
-                        name: '同学',
-                        relation: '您最近的关系没什么变化'
-                    }, {
-                        source: '南小紫',
-                        target: '王刚',
-                        name: '工作伙伴',
-                        relation: '您最近的关系没什么变化'
-                    }, {
-                        source: '南小紫',
-                        target: '李艺璇',
-                        name: '工作伙伴',
-                        relation: '您最近的关系没什么变化'
-                    }, {
-                        source: '南小紫',
-                        target: '张一帆',
-                        name: '工作伙伴',
-                        relation: '您最近的关系没什么变化'
-                    }, {
-                        source: '南小紫',
-                        target: '吴欣怡',
-                        name: '同学',
-                        relation: '您最近的关系超级好',
-                        lineStyle: {
-                            normal: {
-                                type: 'solid',
-                                width: 5
-                            }
-                        },
-                    }],
-                    links : {{ contributor_network_matrix.links | tojson }}
+
+                    data: {{ contributor_network_matrix.nodes | tojson }},
+                    links: {{ contributor_network_matrix.links | tojson }}
                 }
             ]
-        }
+        };
 
         // 使用刚指定的配置项和数据显示图表。
         myChart5.setOption(option5);
