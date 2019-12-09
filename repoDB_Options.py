@@ -547,7 +547,15 @@ class repoDB_Options():
                         newtmp['commit'] = -1
                     nodes.append(newtmp)
             all_info = self.get_col_and_datas(table_name)
-            WIDTH_DIV = 1
+
+            max = 0
+            for i in range(1, all_info.__len__()):
+                for j in range(1, i):
+                    relation = int(all_info[i][j])
+                    if relation > max:
+                        max = relation
+
+            WIDTH_DIV = max/5 #改为相对值
             for i in range(1, all_info.__len__()):
                 for j in range(1, i):
                     relation = int(all_info[i][j])

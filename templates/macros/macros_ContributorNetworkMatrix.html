@@ -69,40 +69,20 @@
             }]
         };
 
+        var nodes = {{ contributor_network_matrix.nodes[0:20] | tojson }};
+        nodes.forEach(function (node) {
+            node.draggable = false;
+        });
 
         var option51 = {
-            tooltip: {
-                formatter: function (x) {
-                    if (typeof (x.data.creditPts) == "undefined") {
-                        return x.data.relation;
-                    } else {
-                        var br = '<br/>';
-                        var a = '信用分数 ' + x.data.creditPts + br;
-                        var b = ' 财务分数 ' + x.data.financialPts + br;
-                        var c = ' 校园表现 ' + x.data.schoolPts + br;
-                        var d = ' 信用变化 ';
-                        if (x.data.creditChange == -3) {
-                            d += '最近信用状况急剧恶化';
-                        } else if (x.data.creditChange == -2) {
-                            d += '最近信用状况越来越不好';
-                        } else if (x.data.creditChange == -1) {
-                            d += '最近信用状况有点下降的倾向';
-                        } else if (x.data.creditChange == 0) {
-                            d += '最近信用状况处于平稳状况';
-                        } else if (x.data.creditChange == 1) {
-                            d += '最近信用状况有提高趋势';
-                        } else {
-                            d += '最近该用户的信用状况非常好';
-                        }
-                        return a + b + c + d;
-                    }
-                }
-            },
+
+            tooltip: {},
+            animation: false,
             series: [
                 {
                     type: 'graph',
                     layout: 'force',
-                    symbolSize: 20,//一般大小
+                    symbolSize: 10,//一般大小
                     roam: true, //是否开启鼠标缩放和平移漫游。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
                     focusNodeAdjacency: true,
                     // symbol: 'pin',
@@ -117,13 +97,13 @@
                         }
                     },
                     force: {
-                        repulsion: 6000,
-                        edgeLength: [10, 50]
+                        repulsion: 100,
+                        {#edgeLength: [10, 50]#}
                     },
                     draggable: true,
                     itemStyle: {
                         normal: {
-                            color: '#409EFF',
+                            color: '#594ebe',
                         }
                     },
                     // 默认的lineStyle
@@ -152,7 +132,7 @@
                             show: false,
                             formatter: function (x) {
                                 //同学，工作伙伴啥的
-                                return x.data.name;
+                                return x.data.relation;
                             }
                         }
                     },
@@ -163,8 +143,40 @@
                         }
                     },
 
-                    data: {{ contributor_network_matrix.nodes | tojson }},
+                    data: nodes,
                     links: {{ contributor_network_matrix.links | tojson }}
+                }
+            ]
+        };
+
+
+
+
+        option52 = {
+            title: {
+                text: 'Les Miserables',
+                subtext: 'Default layout',
+                top: 'bottom',
+                left: 'right'
+            },
+            tooltip: {},
+            animation: false,
+            series: [
+                {
+                    name: 'Les Miserables',
+                    type: 'graph',
+                    layout: 'force',
+                    data: nodes,
+                    links: {{ contributor_network_matrix.links | tojson }},
+                    roam: true,
+                    label: {
+                        normal: {
+                            position: 'right'
+                        }
+                    },
+                    force: {
+                        repulsion: 100
+                    }
                 }
             ]
         };
