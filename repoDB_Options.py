@@ -116,7 +116,7 @@ class repoDB_Options():
             line = f.readline()
             line = line.strip()
             line = line.split(',')
-            for i in range(len(allindex)):
+            for i in range(len(allindex)).__reversed__():
                 insertrow = []
                 index = allindex[i]
                 frechetnum = float(line[index + 1]) * 10000
@@ -443,7 +443,7 @@ class repoDB_Options():
         datas['data'] = data
         datas['max'] = 10
 
-        return datas
+        # return datas
 
         if self.is_table_exist(table_name):
             filenames_raw = self.execute("select filename from {}".format(table_name))
@@ -456,7 +456,7 @@ class repoDB_Options():
             max = 10
             for i in range(1, infos[0].__len__()):
                 for j in range(1, infos.__len__()):
-                    data.append([i - 1, j - 1, infos[j][i]])
+                    data.append([j - 1, i - 1, infos[j][i]])
                     if infos[j][i] > max:
                         max = infos[j][i]
 
@@ -595,7 +595,9 @@ class repoDB_Options():
 
 if __name__ == '__main__':
     repoDB = repoDB_Options()
-    # datas = repoDB.get_FileContributorMatrix("FileContributorMatrix1")
-    datas = repoDB.get_ClassifiedCommitList("ClassifiedCommitList0")
-# datas, newdatas = repoDB.get_ContributorNetworkGraph("ContributorNetworkMatrix0")
-# datas = repoDB.get_repo_base_information("a")
+    table_name = "FileContributorMatrix6"
+    datas = repoDB.get_FileContributorMatrix(table_name)
+    infos = repoDB.get_col_and_datas(table_name)
+    # datas = repoDB.get_ClassifiedCommitList("ClassifiedCommitList0")
+    # datas, newdatas = repoDB.get_ContributorNetworkGraph("ContributorNetworkMatrix0")
+    # datas = repoDB.get_repo_base_information("a")

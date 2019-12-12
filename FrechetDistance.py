@@ -273,7 +273,7 @@ class FrechetDistance(object):
 if __name__ == '__main__':
 	frechet = FrechetDistance()
 	gitminer = JavaGitMiner.GitMiner()
-	url = "git@github.com:OpenSrcRepoDataMining/alluxio.git	"
+	url = "https://github.com/formulahendry/955.WLB"
 	path_prefix = gitminer.get_path_prefix_from_url(url)
 	print(path_prefix)
 	frechet.get_frechet_distance(path_prefix)
