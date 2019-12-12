@@ -47,9 +47,9 @@
             visualMap: {
                 orient: 'horizontal',
                 left: 'center',
-                min: 10,
-                max: 100,
-                text: ['High Score', 'Low Score'],
+                min: 0,
+                max: {{ repo_base_information.max_frechet | tojson}},
+                text: ['High Frechet', 'Low Frechet'],
                 // Map the score column to color
                 dimension: 0,
                 inRange: {

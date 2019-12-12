@@ -3,6 +3,8 @@ import pandas as pd
 import time
 import csv
 import math
+import JavaGitMiner
+
 class FrechetDistance(object):
 	def __init__(self) -> None:
 		super().__init__()
@@ -265,3 +267,13 @@ class FrechetDistance(object):
 
 		end = time.time()
 		print("运行时间：" + str(end - start) + "s")
+
+
+
+if __name__ == '__main__':
+	frechet = FrechetDistance()
+	gitminer = JavaGitMiner.GitMiner()
+	url = "git@github.com:OpenSrcRepoDataMining/alluxio.git	"
+	path_prefix = gitminer.get_path_prefix_from_url(url)
+	print(path_prefix)
+	frechet.get_frechet_distance(path_prefix)

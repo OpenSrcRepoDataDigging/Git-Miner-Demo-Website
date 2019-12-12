@@ -2,7 +2,9 @@ import os
 from concurrent.futures.thread import ThreadPoolExecutor
 
 import jpype
-from FrechetDistance import FrechetDistance
+import pandas
+
+import FrechetDistance
 import repoDB_Options
 import getpass
 executor = ThreadPoolExecutor(5)
@@ -15,7 +17,7 @@ class GitMiner():
 		self.jar_path = os.path.join(os.path.abspath('.'), jar_path)
 		# 开启JVM，且指定jar包, 或者.class文件位置
 		jpype.startJVM(jpype.getDefaultJVMPath(), "-ea", "-Djava.class.path=%s" % self.jar_path)
-		self.frechet = FrechetDistance()
+		self.frechet = FrechetDistance.FrechetDistance()
 
 	def get_path_prefix_from_url(self,url):
 		repo_name = ""
@@ -36,16 +38,24 @@ class GitMiner():
 		# 执行类中的函数了
 		res = mdg.generateNew(url)
 		print("git clone res = ", res)
-		# path_prefix = self.get_path_prefix_from_url(url)
-		# self.frechet.get_frechet_distance(path_prefix)
+
+		# res为1的话，则本地有项目了
+		if res == 0:
+			try:
+				path_prefix = self.get_path_prefix_from_url(url)
+				self.frechet.get_frechet_distance(path_prefix)
+			except pandas.errors.ParserError as e:
+				print(e)
+			except FileNotFoundError as e:
+				print(e)
 
 		return res
 
 
 if __name__ == '__main__':
 	git_miner = GitMiner()
-	#res = git_miner.git_clone(url="git@github.com:OpenSrcRepoDataMining/alluxio.git")
-	res = git_miner.git_clone(url="git@github.com:njubigdata04/InvertedIndexWithHbase.git")
+	res = git_miner.git_clone(url="git@github.com:OpenSrcRepoDataMining/alluxio.git")
+	# res = git_miner.git_clone(url="git@github.com:njubigdata04/InvertedIndexWithHbase.git")
 	print(res)
 
     

@@ -61,27 +61,28 @@ class repoDB_Options():
             [32.7, 20112, 'Walnut Brownie']
         ]
         res['top_ten_frechet'] = source
-
-        return res
+        res['max_frechet'] = 100
+        # TODO: try except
+        # return res
 
         index = self.get_repo_index(repo_name)
         # 实现前十的commit对应关系
         db_name = "LOCSumLastCommit" + str(index)
-        topten = [['contributor', 'commits']]
+        topten = []
         topname = []
         topcommits = []
-        infor = self.execute("select name from {} order by commits".format(db_name))
+        infor = self.execute("select name from {} order by commits desc ".format(db_name))
         for i in infor:
             for j in i:
                 topname.append(j)
-        infor = self.execute("select commits from {} order by commits".format(db_name))
+        infor = self.execute("select commits from {} order by commits desc ".format(db_name))
         for i in infor:
             for j in i:
                 topcommits.append(j)
         for i in range(min(10, topname.__len__())):
-            tmprow = []
-            tmprow.append(topname[i])
-            tmprow.append(topcommits[i])
+            tmprow = dict()
+            tmprow['name'] = topname[i]
+            tmprow['commits'] = topcommits[i]
             topten.append(tmprow)
         res['top_ten_commits'] = topten
         # 计数
@@ -102,6 +103,7 @@ class repoDB_Options():
         allindex = []
         allcommit = []
         allname = []
+        max_frechet = 0
         with open(topfilename, 'r')as top:
             for line in top.readlines():
                 line = line.strip()
@@ -117,12 +119,17 @@ class repoDB_Options():
             for i in range(len(allindex)):
                 insertrow = []
                 index = allindex[i]
-                frechetnum = line[index + 1]
+                frechetnum = float(line[index + 1]) * 10000
+                if frechetnum > max_frechet:
+                    max_frechet = frechetnum
+
                 insertrow.append(frechetnum)
                 insertrow.append(allcommit[i])
                 insertrow.append(allname[i])
                 source.append(insertrow)
-        # print(source)
+        print('top10_new:',source)
+        print('top10_old:',res['top_ten_frechet'])
+        res['max_frechet'] = max_frechet
         res['top_ten_frechet'] = source
         return res
 
