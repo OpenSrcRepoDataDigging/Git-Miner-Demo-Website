@@ -192,6 +192,14 @@ class repoDB_Options():
             ['2019', 7.4, 45.9, 66.1, 42.4],
             ['2020', 42.4, 22.9, 19.1, 43.3]
         ]
+
+        selected = {
+            '没有': True,
+            '这个': False,
+            '对应的': False,
+            '数据': False,
+        }
+
         classify = dict()
         classify['date'] = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
         classify['add'] = [120, 132, 101, 134, 90, 230, 210]
@@ -200,6 +208,7 @@ class repoDB_Options():
         classify['fix'] = [320, 332, 301, 334, 390, 330, 320]
 
         res['commits_list'] = datas
+        res['commits_list_selected'] = selected
         res['commits_classify'] = classify
 
         barcodes = dict()
@@ -233,6 +242,8 @@ class repoDB_Options():
             barcodes['top'].append(barcode)
 
         res['barcodes'] = barcodes
+
+        # return res
 
         # 计算BarCode
         if self.is_table_exist(table_name):
@@ -292,6 +303,12 @@ class repoDB_Options():
 
         if self.is_table_exist(table_name):
             res['commits_list'] = self.get_col_and_datas(table_name)
+            selected = dict()
+            header = res['commits_list'][0]
+            selected[header[1]] = True
+            for i in range(2,header.__len__()):
+                selected[header[i]] = False
+            res['commits_list_selected'] = selected
             classify_table_name = str(table_name).replace('CommitTimesListByDay', 'ClassifiedCommitList')
             res['commits_classify'] = self.get_ClassifiedCommitList(classify_table_name)
         else:

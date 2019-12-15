@@ -30,8 +30,26 @@
             {% endfor %}
             </tbody>
         </table>
-        <h5>3.Top10 总体-个人贡献(相对)相似度</h5>
+        <h5>3.Top3 总体-个人贡献相似度榜单</h5>
+        <table class="table">
+            <thead>
+            <th>No.1</th>
+            <th>No.2</th>
+            <th>No.3</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><i class="fa fa-user-circle-o" style="font-size: xx-large; color: blueviolet" aria-hidden="true"></i>{{ repo_base_information.top_ten_frechet[-1][2]}}</td>
+                    <td><i class="fa fa-user-circle-o" style="font-size: x-large; color: blueviolet" aria-hidden="true"></i>{{ repo_base_information.top_ten_frechet[-2][2]}}</td>
+                    <td><i class="fa fa-user-circle-o" style="font-size: large; color: mediumpurple" aria-hidden="true"></i>{{ repo_base_information.top_ten_frechet[-3][2]}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <h5>4.Top10 总体-个人贡献(相对)相似度</h5>
         <div id="main2" style="width: 800px;height:500px;margin: 0 auto;"></div>
+        <br/>
+        <cite>附注：贡献相似度越高，则说明贡献者更倾向于全程参与项目，且参与程度通常较高，是项目的重要贡献者。</cite>
+        <br/>
     </div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例

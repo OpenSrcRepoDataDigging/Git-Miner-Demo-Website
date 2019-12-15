@@ -27,7 +27,9 @@
         var src_data = {{ commit_times_list_by_day.commits_list|tojson }};
         console.log(src_data);
         var option1 = {
-            legend: {},
+            legend: {
+                selected: {{ commit_times_list_by_day.commits_list_selected | tojson}}
+            },
             tooltip: {},
             dataset: {
                 source: src_data
@@ -35,7 +37,7 @@
             toolbox: {
                 show: true,
                 feature: {
-                    dataView: {show: true, readOnly: false},
+                    {#dataView: {show: true, readOnly: false},#}
                     magicType: {show: true, type: ['line', 'bar']},
                     restore: {show: true},
                     saveAsImage: {show: true}
@@ -47,7 +49,7 @@
             // to a column of dataset.source by default.
             series: [
                 {% for foo in range((commit_times_list_by_day.commits_list[0]|length - 1)) %}
-                    {type: 'bar'},
+                    {type: 'line'},
                 {% endfor %}
             ]
         };
